@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Eye, EyeOff } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import * as z from 'zod'
@@ -20,6 +21,12 @@ import { signupSchema } from '@/utils/schema'
 
 export const Signup = () => {
   const navigate = useNavigate()
+
+  // const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+
+  const togglePasswordVisibility = () => setShowPassword(!showPassword)
+
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -81,7 +88,20 @@ export const Signup = () => {
                 <FormItem>
                   <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="******" {...field} />
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="******"
+                        {...field}
+                      />
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 cursor-pointer">
+                        {showPassword ? (
+                          <Eye onClick={togglePasswordVisibility} />
+                        ) : (
+                          <EyeOff onClick={togglePasswordVisibility} />
+                        )}
+                      </div>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
