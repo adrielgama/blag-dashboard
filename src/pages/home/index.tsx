@@ -1,5 +1,8 @@
 import React from 'react'
 
+import { Eye, Pen, PenBox } from 'lucide-react'
+
+import { Stats } from '@/components/Home/stats'
 import { TopArticles } from '@/components/Home/topArticles'
 import { Welcome } from '@/components/Home/welcome'
 
@@ -49,9 +52,16 @@ export const Home: React.FC = () => {
   ]
 
   return (
-    <div className="flex flex-col gap-4 ml-40">
-      <Welcome name={'Adriel Gama'} />
-      <TopArticles articles={articles} />
+    <div className="flex gap-4 ml-40">
+      <div className="flex flex-col gap-4">
+        <Welcome name={'Adriel Gama'} />
+        <TopArticles articles={articles} />
+      </div>
+      <div className="flex flex-col gap-4">
+        <Stats icon={<Eye />} title="Total views" value={130000} />
+        <Stats icon={<Pen />} title="Artigos postados" value={6} />
+        <Stats icon={<PenBox />} title="Rascunhos" value={13} />
+      </div>
     </div>
   )
 }
