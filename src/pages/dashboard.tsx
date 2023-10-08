@@ -1,6 +1,18 @@
 import { useEffect } from 'react'
 
+import { BadgePlus, Home as HomeIcon, PenSquare, User2 } from 'lucide-react'
+
+import { Sidebar } from '@/components/Sidebar'
 import { useAuthContext } from '@/context/AuthContext'
+
+import { Home } from './home'
+
+export const sidebarItems = [
+  { icon: <HomeIcon />, title: 'Home' },
+  { icon: <BadgePlus />, title: 'Nova Postagem' },
+  { icon: <PenSquare />, title: 'Rascunhos' },
+  { icon: <User2 />, title: 'Perfil' },
+]
 
 export const Dashboard = () => {
   const { isAuthenticated } = useAuthContext()
@@ -9,9 +21,11 @@ export const Dashboard = () => {
   }, [isAuthenticated])
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1>Dashboard</h1>
-      <h1>{isAuthenticated === true ? 'YES' : 'NO'}</h1>
+    <div className="flex">
+      <Sidebar items={sidebarItems} />
+      <div className="flex-1 p-10 container min-h-screen">
+        <Home />
+      </div>
     </div>
   )
 }

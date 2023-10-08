@@ -31,6 +31,9 @@ module.exports = {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'idea-svg': "url('/src/assets/idea_icon.svg')",
+        'writer-woman': "url('/src/assets/female-writer.webp')",
+        'writer-man': "url('/src/assets/writer.webp')",
       },
       keyframes: {
         'accordion-down': {

@@ -88,6 +88,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [accessToken])
 
   useEffect(() => {
+    if (!accessToken) return
+
     const checkAuthentication = async () => {
       try {
         const response = await api.get('/users/verify-token', {
@@ -95,7 +97,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           withCredentials: true,
         })
 
-        if (response.status === 200) {
+        if (response.status === 200 && !isAuthenticated) {
           setIsAuthenticated(true)
         }
       } catch (error) {
@@ -105,7 +107,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     checkAuthentication()
-  }, [accessToken])
+  }, [accessToken, isAuthenticated])
 
   const value = useMemo(
     () => ({

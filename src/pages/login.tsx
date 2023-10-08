@@ -47,13 +47,13 @@ export const Login = () => {
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     setLoading(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
       await onLogin(values.email, values.password)
       toast.success('Login realizado com sucesso!')
 
       setTimeout(() => {
         navigate('/home')
-      }, 2000)
+      }, 1000)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setLoading(false)
@@ -81,7 +81,7 @@ export const Login = () => {
     if (isAuthenticated) {
       timer = setTimeout(() => {
         navigate('/home')
-      }, 2000)
+      }, 1000)
     }
     return () => {
       clearTimeout(timer)
