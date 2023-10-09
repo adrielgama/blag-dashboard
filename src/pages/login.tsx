@@ -51,9 +51,8 @@ export const Login = () => {
       await onLogin(values.email, values.password)
       toast.success('Login realizado com sucesso!')
 
-      setTimeout(() => {
-        navigate('/home')
-      }, 1000)
+      navigate('/home')
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setLoading(false)
@@ -77,14 +76,8 @@ export const Login = () => {
   }
 
   useEffect(() => {
-    let timer: NodeJS.Timeout | undefined
     if (isAuthenticated) {
-      timer = setTimeout(() => {
-        navigate('/home')
-      }, 1000)
-    }
-    return () => {
-      clearTimeout(timer)
+      navigate('/home')
     }
   }, [isAuthenticated, navigate])
 
@@ -97,7 +90,7 @@ export const Login = () => {
       <Logo />
       {loading && <Spinner />}
 
-      <div className="w-96 h-auto bg-secondary p-6 rounded-md">
+      <div className="w-96 h-auto bg-blue-400 p-6 rounded-md">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField

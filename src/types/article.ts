@@ -1,6 +1,6 @@
-import { Account } from './index'
+import { IAccount } from './index'
 
-export interface Article {
+export interface IArticle {
   id: string
   title: string
   description?: string
@@ -8,7 +8,7 @@ export interface Article {
   published: boolean | false
   createdAt: Date
   updatedAt: Date
-  author?: Account
+  author?: IAccount
   authorId?: string
   imageUrl?: string
 }

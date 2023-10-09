@@ -1,12 +1,12 @@
-import { User, Article, RefreshToken } from './index'
+import { User, IArticle, RefreshToken } from './index'
 
-export interface Account {
+export interface IAccount {
   id: string
   name: string
   email: string
   password: string
   typeUser: User
   createdAt: string
-  Article: Article[]
+  Article: IArticle[]
   RefreshToken?: RefreshToken
 }

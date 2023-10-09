@@ -48,7 +48,7 @@ export const Signup = () => {
     <div className="flex min-h-screen flex-col items-center justify-evenly container mx-auto p-10">
       <Logo />
 
-      <div className="w-96 h-auto bg-secondary p-6 rounded-md">
+      <div className="w-96 h-auto bg-blue-400 p-6 rounded-md">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField

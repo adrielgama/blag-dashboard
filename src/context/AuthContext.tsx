@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   createContext,
   useContext,
@@ -8,9 +9,9 @@ import React, {
   useCallback,
 } from 'react'
 
-import { destroyCookie, setCookie } from 'nookies'
+import { destroyCookie, parseCookies, setCookie } from 'nookies'
 
-import { ILogin } from '@/types'
+import { ILogin, IUser } from '@/types'
 import { api } from '@/utils/httpClient'
 
 interface AuthProviderProps {
@@ -18,7 +19,7 @@ interface AuthProviderProps {
 }
 
 interface IAuthContextData {
-  user: null | ILogin['user']
+  user: null | ILogin['user'] | IUser
   isAuthenticated: boolean
   onLogin: (email: string, password: string) => Promise<void>
   onLogout: () => void
@@ -30,37 +31,69 @@ const AuthContext = createContext({} as IAuthContextData)
 export const useAuthContext = () => useContext(AuthContext)
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<ILogin['user'] | null>(null)
-  const [accessToken, setAccessToken] = useState<string | null>(null)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [user, setUser] = useState<ILogin['user'] | IUser | null>(null)
+  const isAuthenticated = !!user
 
-  // const isAuthenticated = Boolean(user && accessToken)
+  const parseJSON = (json: string) => {
+    try {
+      return JSON.parse(json)
+    } catch (error) {
+      return null
+    }
+  }
+
+  useEffect(() => {
+    const {
+      'blag.user': userComingFromCookie,
+      'blag.refreshToken': refreshToken = null,
+    } = parseCookies()
+    const parsedUser = parseJSON(userComingFromCookie)
+    if (parsedUser && refreshToken) {
+      setUser(parsedUser)
+    } else {
+      handleLogout()
+    }
+  }, [])
 
   const handleLogin = async (email: string, password: string) => {
-    const response = await api.post<ILogin>('/users/login', {
-      email,
-      password,
-    })
-    console.log('API Response: ', response)
+    try {
+      const response = await api.post<ILogin>('/users/login', {
+        email,
+        password,
+      })
+      console.log('API Response: ', response)
+      const { token, refreshToken, user: userComing } = response?.data || {}
 
-    setUser(response.data.user)
-    setAccessToken(response.data.token)
-    setCookie(undefined, 'accessToken', response.data.token, {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30,
-    })
-    localStorage.setItem('refreshToken', response.data.refreshToken)
+      setCookie(undefined, 'blag.accessToken', token, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30,
+      })
+      setCookie(undefined, 'blag.refreshToken', refreshToken, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30,
+      })
+      setCookie(undefined, 'blag.user', JSON.stringify(userComing), {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30,
+      })
+
+      setUser(userComing)
+      api.defaults.timeout = 5000
+      api.defaults.headers.Authorization = `Bearer ${token}`
+    } catch (error) {
+      console.error('Ops, deu ruim: ', error)
+    }
   }
 
   const handleLogout = useCallback(() => {
     setUser(null)
-    setAccessToken(null)
-    destroyCookie(undefined, 'accessToken')
-    localStorage.removeItem('refreshToken')
+    destroyCookie(undefined, 'blag.accessToken')
+    destroyCookie(undefined, 'blag.refreshToken')
+    destroyCookie(undefined, 'blag.user')
   }, [setUser])
 
   const refreshToken = useCallback(async () => {
-    const storedRefreshToken = localStorage.getItem('refreshToken')
+    const storedRefreshToken = parseCookies(undefined, 'blag.refreshToken')
     if (!storedRefreshToken) {
       console.error('No refresh token found')
       handleLogout()
@@ -71,43 +104,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await api.post<ILogin>('/users/refresh-token', {
         refreshToken: storedRefreshToken,
       })
-      setAccessToken(response.data.token)
-      localStorage.setItem('refreshToken', response.data.refreshToken)
+      setCookie(undefined, 'blag.refreshToken', response.data.refreshToken, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30,
+      })
     } catch (error) {
+      alert('Token refresh error!')
       console.error('Token refresh error:', error)
       handleLogout()
     }
   }, [handleLogout])
 
-  useEffect(() => {
-    if (accessToken) {
-      api.defaults.headers.Authorization = `Bearer ${accessToken}`
-    } else {
-      delete api.defaults.headers.Authorization
-    }
-  }, [accessToken])
+  // useEffect(() => {
+  //   if (!accessToken) return
 
-  useEffect(() => {
-    if (!accessToken) return
+  //   const checkAuthentication = async () => {
+  //     try {
+  //       const response = await api.get('/users/verify-token', {
+  //         headers: { Authorization: `Bearer ${accessToken}` },
+  //         withCredentials: true,
+  //       })
 
-    const checkAuthentication = async () => {
-      try {
-        const response = await api.get('/users/verify-token', {
-          headers: { Authorization: `Bearer ${accessToken}` },
-          withCredentials: true,
-        })
+  //       if (response.status === 200 && !isAuthenticated) {
+  //         setIsAuthenticated(true)
+  //       }
+  //     } catch (error) {
+  //       console.error('Erro ao verificar autenticação:', error)
+  //       setIsAuthenticated(false)
+  //     }
+  //   }
 
-        if (response.status === 200 && !isAuthenticated) {
-          setIsAuthenticated(true)
-        }
-      } catch (error) {
-        console.error('Erro ao verificar autenticação:', error)
-        setIsAuthenticated(false)
-      }
-    }
-
-    checkAuthentication()
-  }, [accessToken, isAuthenticated])
+  //   checkAuthentication()
+  // }, [accessToken, isAuthenticated])
 
   const value = useMemo(
     () => ({
@@ -117,7 +145,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       onLogout: handleLogout,
       refreshToken,
     }),
-    [user, handleLogout, refreshToken, isAuthenticated]
+    [user, isAuthenticated, handleLogin, handleLogout, refreshToken]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

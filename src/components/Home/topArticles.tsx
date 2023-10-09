@@ -16,8 +16,8 @@ interface TopArticlesProps {
 
 export const TopArticles: React.FC<TopArticlesProps> = ({ articles }) => {
   return (
-    <div className="bg-white rounded-md max-w-3xl p-8 flex flex-col gap-4">
-      <h1 className="text-2xl font-semibold text-primary mb-4">
+    <div className="bg-white rounded-md p-8 flex flex-col gap-4">
+      <h1 className="text-2xl font-semibold text-blue-600 mb-4">
         Top Postagens
       </h1>
       {articles.map(({ image, title, createdAt, views }, index) => (
@@ -41,7 +41,7 @@ export const TopArticles: React.FC<TopArticlesProps> = ({ articles }) => {
             </div>
           </div>
           <div className="flex gap-2 items-start w-28">
-            <Eye size={24} className="fill-text text-secondary" />
+            <Eye size={24} className="fill-text text-blue-300" />
             <p className="font-semibold">{formatViews(views)}</p>
           </div>
         </div>

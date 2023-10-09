@@ -6,6 +6,7 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 23, 28, 48; /* #171c30 */
   --background-end-rgb: 38, 45, 71; /* #262d47 */ 
+  
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,3 +21,25 @@
   color: rgb(var(--foreground-rgb));
   background-color: rgb(var(--background-start-rgb));
 }
+
+/* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #090c19 #262d47;
+  }
+
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #262d47;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #090c19;
+    border-radius: 10px;
+    border: 2px solid #262d47;
+  }

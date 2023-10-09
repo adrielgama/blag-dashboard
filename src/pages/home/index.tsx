@@ -52,7 +52,7 @@ export const Home: React.FC = () => {
   ]
 
   return (
-    <div className="flex gap-4 ml-40">
+    <div className="flex gap-4 container">
       <div className="flex flex-col gap-4">
         <Welcome name={'Adriel Gama'} />
         <TopArticles articles={articles} />

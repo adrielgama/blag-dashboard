@@ -6,8 +6,8 @@ import ProtectedWrapper from './routes/ProtectedWrapper'
 
 export const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/sign-up" element={<Signup />} />
@@ -20,7 +20,7 @@ export const App: React.FC = () => {
             }
           />
         </Routes>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   )
 }
