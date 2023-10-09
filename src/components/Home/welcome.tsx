@@ -5,7 +5,7 @@ import IdeaImage from '@/assets/idea_icon.svg'
 import { Button } from '../ui/button'
 
 interface IWelcomeProps {
-  name: string
+  name: string | undefined
 }
 
 export const Welcome: React.FC<IWelcomeProps> = ({ name }) => {

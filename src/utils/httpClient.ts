@@ -1,9 +1,23 @@
-// utils/httpClient.ts
 import axios from 'axios'
+import { parseCookies, setCookie } from 'nookies'
 
+const cookies = parseCookies()
 const api = axios.create({
   baseURL: 'https://api.adrielgama.dev',
 })
+
+api.interceptors.request.use(
+  (config) => {
+    const token = cookies['blag.accessToken']
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
 
 api.interceptors.response.use(
   (response) => {
@@ -13,13 +27,13 @@ api.interceptors.response.use(
     const originalRequest = error.config
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
-      const refreshToken = localStorage.getItem('refreshToken')
+      const refreshToken = cookies['blag.refreshToken'] // Supondo que o refreshToken também esteja no cookie
       try {
         const { data } = await api.post('/users/refresh-token', {
           refreshToken,
         })
-        localStorage.setItem('token', data.token)
-        localStorage.setItem('refreshToken', data.refreshToken)
+        setCookie(null, 'blag.accessToken', data.token, { path: '/' })
+        setCookie(null, 'blag.refreshToken', data.refreshToken, { path: '/' })
         api.defaults.headers.Authorization = `Bearer ${data.token}`
         return api(originalRequest)
       } catch (refreshError) {

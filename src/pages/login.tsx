@@ -51,7 +51,7 @@ export const Login = () => {
       await onLogin(values.email, values.password)
       toast.success('Login realizado com sucesso!')
 
-      navigate('/home')
+      navigate('/dashboard')
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -77,7 +77,7 @@ export const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/home')
+      navigate('/dashboard')
     }
   }, [isAuthenticated, navigate])
 

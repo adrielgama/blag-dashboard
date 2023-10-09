@@ -1,5 +1,12 @@
-import { BadgePlus, Home, LogOut, PenSquare, User2 } from 'lucide-react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import {
+  BadgePlus,
+  BookOpenCheck,
+  Home,
+  LogOut,
+  PenSquare,
+  User2,
+} from 'lucide-react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { useAuthContext } from '@/context/AuthContext'
 
@@ -12,10 +19,19 @@ export const Sidebar = () => {
   const location = useLocation()
 
   const sidebarItems = [
-    { icon: <Home />, title: 'Home', route: '/home' },
-    { icon: <BadgePlus />, title: 'Nova Postagem', route: '#' },
-    { icon: <PenSquare />, title: 'Rascunhos', route: '#' },
-    { icon: <User2 />, title: 'Perfil', route: '#' },
+    { icon: <Home />, title: 'Home', route: '/dashboard' },
+    {
+      icon: <BadgePlus />,
+      title: 'Nova Postagem',
+      route: '/dashboard/new-post',
+    },
+    {
+      icon: <BookOpenCheck />,
+      title: 'Meus artigos',
+      route: '/dashboard/articles',
+    },
+    { icon: <PenSquare />, title: 'Rascunhos', route: '/dashboard/drafts' },
+    { icon: <User2 />, title: 'Perfil', route: '/dashboard/profile' },
   ]
 
   const handleLogout = () => {
@@ -39,8 +55,8 @@ export const Sidebar = () => {
 
             return (
               <li key={title} className="cursor-pointer">
-                <a
-                  href={route}
+                <Link
+                  to={route}
                   className={`
                     flex items-center rounded-lg px-3 py-2 text-white 
                     ${isActive ? 'bg-blue-600' : 'hover:bg-blue-600'}
@@ -48,7 +64,7 @@ export const Sidebar = () => {
                 >
                   {icon}
                   <span className="ml-3 flex-1 whitespace-nowrap">{title}</span>
-                </a>
+                </Link>
               </li>
             )
           })}

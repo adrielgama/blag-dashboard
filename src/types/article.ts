@@ -11,4 +11,5 @@ export interface IArticle {
   author?: IAccount
   authorId?: string
   imageUrl?: string
+  views?: number
 }

@@ -10,6 +10,7 @@ import React, {
 } from 'react'
 
 import { destroyCookie, parseCookies, setCookie } from 'nookies'
+import { useNavigate } from 'react-router-dom'
 
 import { ILogin, IUser } from '@/types'
 import { api } from '@/utils/httpClient'
@@ -31,6 +32,7 @@ const AuthContext = createContext({} as IAuthContextData)
 export const useAuthContext = () => useContext(AuthContext)
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const navigate = useNavigate()
   const [user, setUser] = useState<ILogin['user'] | IUser | null>(null)
   const isAuthenticated = !!user
 
@@ -90,6 +92,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     destroyCookie(undefined, 'blag.accessToken')
     destroyCookie(undefined, 'blag.refreshToken')
     destroyCookie(undefined, 'blag.user')
+    navigate('/')
   }, [setUser])
 
   const refreshToken = useCallback(async () => {
