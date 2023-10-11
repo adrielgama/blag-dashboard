@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Edit2, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 import { IArticle } from '@/types'
 import { formatDate } from '@/utils/formatDate'
@@ -14,6 +15,7 @@ interface ArticleItemProps {
 }
 
 const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
+  const navigate = useNavigate()
   const {
     title,
     id,
@@ -24,11 +26,20 @@ const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
     views,
   } = article
 
+  const handleEditNavigation = () => {
+    navigate(`/dashboard/edit/${id}`)
+  }
+
+  const handleDeleteArticle = () => {
+    console.log('DELETE', id)
+    // navigate(`/edit/${id}`)
+  }
+
   return (
     <div
       key={id}
-      className="bg-blue-400 flex flex-row justify-between p-8 rounded-md cursor-pointer hover:bg-blue-400/80 mb-2"
-      onClick={() => console.log('click: ', id)}
+      className="bg-blue-400 flex flex-row justify-between p-8 rounded-md cursor-pointer hover:bg-blue-400/70 mb-2"
+      onClick={handleEditNavigation}
     >
       <div className="flex gap-4">
         <img
@@ -60,9 +71,15 @@ const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
       <div className="flex flex-col gap-2 items-center">
         <h1 className="text-blue-500 font-bold">Ações</h1>
         <div className="flex h-5 items-center space-x-4 text-sm transition-all text-gray-600">
-          <Edit2 className="cursor-pointer hover:text-green-700" />
+          <Edit2
+            className="cursor-pointer hover:text-green-700"
+            onClick={handleEditNavigation}
+          />
           <Separator orientation="vertical" />
-          <Trash2 className="cursor-pointer hover:text-red-400" />
+          <Trash2
+            className="cursor-pointer hover:text-red-400"
+            onClick={handleDeleteArticle}
+          />
         </div>
       </div>
     </div>

@@ -23,6 +23,8 @@ interface IArticleContextData {
   articles: IArticle[]
   getArticles: () => Promise<void>
   getArticleByUserID: () => Promise<void>
+  selectedArticle: IArticle | undefined
+  setSelectedArticle: React.Dispatch<React.SetStateAction<IArticle | undefined>>
   createArticle: (articleData: IArticle) => Promise<void>
 }
 
@@ -35,6 +37,7 @@ export const ArticleProvider: React.FC<ArticleProviderProps> = ({
 }) => {
   const { onLogout } = useAuthContext()
   const [articles, setArticles] = useState<IArticle[]>([])
+  const [selectedArticle, setSelectedArticle] = useState<IArticle>()
 
   const getArticles = async () => {
     try {
@@ -115,8 +118,10 @@ export const ArticleProvider: React.FC<ArticleProviderProps> = ({
       updateArticle,
       deleteArticle,
       getArticleByUserID,
+      selectedArticle,
+      setSelectedArticle,
     }),
-    [articles, getArticleByUserID]
+    [articles, getArticleByUserID, selectedArticle, setSelectedArticle]
   )
 
   return (

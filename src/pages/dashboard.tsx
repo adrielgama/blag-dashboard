@@ -5,6 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 
 import { Home } from './home'
 import { MyArticles } from './my-articles'
+import { EditArticle } from './my-articles/edit-article'
 
 export const Dashboard: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ export const Dashboard: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/articles" element={<MyArticles />} />
+          <Route path="/edit/:id" element={<EditArticle />} />
         </Routes>
       </ScrollArea>
     </>
