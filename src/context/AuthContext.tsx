@@ -66,9 +66,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       })
       const { token, refreshToken, user: userComing } = response?.data || {}
 
-      if (userComing && userComing.password) {
-        delete userComing.password
-      }
+      // if (userComing && userComing.password) {
+      //   delete userComing.password
+      // }
 
       setCookie(undefined, 'blag.accessToken', token, {
         path: '/',
