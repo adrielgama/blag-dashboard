@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Edit2, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
@@ -10,6 +10,8 @@ import { formatDate } from '@/utils/formatDate'
 import { formatViews } from '@/utils/formatViews'
 import { truncateString } from '@/utils/truncateString'
 
+import { Button } from '../ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Separator } from '../ui/separator'
 
 interface ArticleItemProps {
@@ -28,6 +30,7 @@ const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
     author,
     views,
   } = article
+  const [isOpen, setIsOpen] = useState(false)
 
   const handleEditNavigation = (article: IArticle) => {
     setSelectedArticle(article)
@@ -74,20 +77,41 @@ const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
           <ThumbsDown className="text-red-400" />
         )}
       </div>
-      <div className="flex flex-col gap-2 items-center">
-        <h1 className="text-blue-500 font-bold">Ações</h1>
-        <div className="flex h-5 items-center space-x-4 text-sm transition-all text-gray-600">
-          <Edit2
-            className="cursor-pointer hover:text-yellow-300"
-            onClick={() => handleEditNavigation(article)}
-          />
-          <Separator orientation="vertical" />
-          <Trash2
-            className="cursor-pointer hover:text-red-500"
-            onClick={handleDeleteArticle}
-          />
+      <Popover open={isOpen}>
+        <div className="flex flex-col gap-2 items-center">
+          <h1 className="text-blue-500 font-bold">Ações</h1>
+          <div className="flex h-5 items-center space-x-4 text-sm transition-all text-gray-600">
+            <Edit2
+              className="cursor-pointer hover:text-yellow-300"
+              onClick={() => handleEditNavigation(article)}
+            />
+            <Separator orientation="vertical" />
+            <PopoverTrigger asChild>
+              <Trash2
+                className="cursor-pointer hover:text-red-500"
+                // onClick={handleDeleteArticle}
+                onClick={() => setIsOpen(true)}
+              />
+            </PopoverTrigger>
+          </div>
         </div>
-      </div>
+        <PopoverContent className="grid gap-4 place-items-center">
+          <p className="text-center text-sm">
+            Tem certeza que deseja excluir este artigo?
+          </p>
+          <div className="flex gap-4">
+            <Button
+              className="bg-blue-100 hover:bg-blue-300"
+              onClick={() => setIsOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteArticle}>
+              <Trash2 className="mr-2" size={18} /> Confirmar
+            </Button>
+          </div>
+        </PopoverContent>
+      </Popover>
     </div>
   )
 }
