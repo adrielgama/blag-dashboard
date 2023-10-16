@@ -18,11 +18,6 @@ module.exports = {
     },
     extend: {
       colors: {
-        // primary: '#171c30',
-        // secondary: '#262d47',
-        // text: '#646e8d',
-        // 'blue-600': '#181B24',
-        // 'blue-400': '#242635',
         'blue-600': '#171c30',
         'blue-400': '#262d47',
         'blue-300': '#343947',
@@ -32,9 +27,6 @@ module.exports = {
         'red-100': '#CC324C',
       },
       backgroundColor: {
-        // primary: '#171c30',
-        // secondary: '#262d47',
-        // text: '#646e8d',
         'blue-600': '#171c30',
         'blue-400': '#262d47',
         'blue-300': '#343947',

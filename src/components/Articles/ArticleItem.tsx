@@ -3,6 +3,7 @@ import React from 'react'
 import { Edit2, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
+import { useArticleContext } from '@/context/ArticleContext'
 import { IArticle } from '@/types'
 import { formatDate } from '@/utils/formatDate'
 import { formatViews } from '@/utils/formatViews'
@@ -16,6 +17,7 @@ interface ArticleItemProps {
 
 const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
   const navigate = useNavigate()
+  const { setSelectedArticle } = useArticleContext()
   const {
     title,
     id,
@@ -26,8 +28,9 @@ const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
     views,
   } = article
 
-  const handleEditNavigation = () => {
-    navigate(`/dashboard/edit/${id}`)
+  const handleEditNavigation = async (article: IArticle) => {
+    await setSelectedArticle(article)
+    navigate(`/dashboard/edit/${article.id}`)
   }
 
   const handleDeleteArticle = () => {
@@ -39,7 +42,7 @@ const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
     <div
       key={id}
       className="bg-blue-400 flex flex-row justify-between p-8 rounded-md cursor-pointer hover:bg-blue-400/70 mb-2"
-      onClick={handleEditNavigation}
+      onClick={() => handleEditNavigation(article)}
     >
       <div className="flex gap-4">
         <img
@@ -73,7 +76,7 @@ const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
         <div className="flex h-5 items-center space-x-4 text-sm transition-all text-gray-600">
           <Edit2
             className="cursor-pointer hover:text-green-700"
-            onClick={handleEditNavigation}
+            onClick={() => handleEditNavigation(article)}
           />
           <Separator orientation="vertical" />
           <Trash2

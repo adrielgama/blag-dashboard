@@ -6,7 +6,7 @@ export const MyArticles: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4 container">
-      <ListArticles articles={articles} />
+      <ListArticles articles={articles || []} />
     </div>
   )
 }

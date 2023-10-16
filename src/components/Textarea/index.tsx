@@ -1,81 +1,76 @@
-import { useRef, useState } from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useCallback, useMemo, useRef } from 'react'
 
-import * as Emoji from 'quill-emoji'
-import ReactQuill, { Quill } from 'react-quill'
+import { Editor } from '@tinymce/tinymce-react'
+import { Editor as TinyMCEEEditor } from 'tinymce'
 
-import { htmlToMarkdown, markdownToHtml } from '@/utils/parser'
+const { VITE_TINY_API_KEY } = import.meta.env
 
-import 'react-quill/dist/quill.snow.css'
-import 'quill-emoji/dist/quill-emoji.css'
-
-Quill.register('modules/emoji', Emoji)
-
-export interface EditorContentChanged {
-  html: string
-  markdown: string
-}
-
-export interface EditorProps {
+export interface TextareaEditorProps {
   value?: string
-  onChange?: (changes: EditorContentChanged) => void
+  onChange?: (content: string) => void
 }
 
-const toolbarOptions = [
-  [{ header: [1, 2, 3, false] }],
-  ['bold', 'italic', 'underline', 'strike', 'blockquote', 'link', 'code-block'],
-  [{ list: 'ordered' }, { list: 'bullet' }],
-  [{ indent: '-1' }, { indent: '+1' }],
-  ['emoji'],
-  ['clean'],
-]
+export const TextareaEditor: React.FC<TextareaEditorProps> = ({
+  value,
+  onChange,
+}) => {
+  const editorRef = useRef<TinyMCEEEditor | null>(null)
 
-const formats = [
-  'header',
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'blockquote',
-  'list',
-  'bullet',
-  'indent',
-  'link',
-]
+  const initConfig = useMemo(
+    () => ({
+      height: 300,
+      menubar: false,
+      statusbar: false,
+      toolbar_sticky: true,
+      language: 'pt_BR',
+      plugins: [
+        'advlist',
+        'autolink',
+        'lists',
+        'link',
+        'image',
+        'charmap',
+        'preview',
+        'anchor',
+        'searchreplace',
+        'visualblocks',
+        'code',
+        'fullscreen',
+        'insertdatetime',
+        'media',
+        'table',
+        'code',
+        'help',
+        'wordcount',
+        'emoticons',
+      ],
+      toolbar:
+        'undo redo | blocks | link | ' +
+        'bold italic underline  forecolor | alignleft aligncenter ' +
+        'alignright alignjustify | bullist numlist outdent indent blockquote | ' +
+        'emoticons | removeformat | help | wordcount |',
+      content_style:
+        'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+    }),
+    []
+  )
 
-export const TextareaEditor = (props: EditorProps) => {
-  const [value, setValue] = useState<string>(markdownToHtml(props.value || ''))
-  const reactQuillRef = useRef<ReactQuill>(null)
+  const handleInit = useCallback((_: any, editor: TinyMCEEEditor) => {
+    editorRef.current = editor
+  }, [])
 
-  const onChange = (content: string) => {
-    setValue(content)
-
-    if (props.onChange) {
-      props.onChange({
-        html: content,
-        markdown: htmlToMarkdown(content),
-      })
-    }
+  const handleEditorChange = (content: string) => {
+    onChange?.(content)
   }
 
   return (
-    <div className="bg-white">
-      <ReactQuill
-        ref={reactQuillRef}
-        theme="snow"
-        placeholder="Escreva seu artigo aqui"
-        modules={{
-          toolbar: {
-            container: toolbarOptions,
-          },
-          'emoji-toolbar': true,
-          'emoji-textarea': false,
-          'emoji-shortname': true,
-        }}
-        formats={formats}
-        value={value}
-        onChange={onChange}
-        // {...props}
-      />
-    </div>
+    <Editor
+      apiKey={VITE_TINY_API_KEY}
+      onInit={handleInit}
+      value={value}
+      onEditorChange={handleEditorChange}
+      init={initConfig}
+    />
   )
 }

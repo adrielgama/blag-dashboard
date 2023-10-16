@@ -6,7 +6,7 @@ const getTotalViews = (articles?: IArticle[]) => {
   }
 
   return articles.reduce((total: number, article: IArticle) => {
-    return total + (article.published ? article.views || 0 : 0)
+    return article && article.published ? total + (article.views || 0) : total
   }, 0)
 }
 
@@ -15,7 +15,8 @@ const getPostedArticlesCount = (articles?: IArticle[]) => {
     return 0
   }
 
-  return articles.filter((article: IArticle) => article.published).length
+  return articles.filter((article: IArticle) => article && article.published)
+    .length
 }
 
 const getDraftsCount = (articles?: IArticle[]) => {
@@ -23,7 +24,8 @@ const getDraftsCount = (articles?: IArticle[]) => {
     return 0
   }
 
-  return articles.filter((article: IArticle) => !article.published).length
+  return articles.filter((article: IArticle) => article && !article.published)
+    .length
 }
 
 export { getDraftsCount, getPostedArticlesCount, getTotalViews }

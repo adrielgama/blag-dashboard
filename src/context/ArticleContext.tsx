@@ -6,11 +6,15 @@ import React, {
   useMemo,
   useState,
   useCallback,
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
 } from 'react'
 
 import { parseCookies } from 'nookies'
 
-import { IArticle } from '@/types'
+import { IArticle, IArticleUpdate } from '@/types'
 import { api } from '@/utils/httpClient'
 
 import { useAuthContext } from './AuthContext'
@@ -23,8 +27,9 @@ interface IArticleContextData {
   articles: IArticle[]
   getArticles: () => Promise<void>
   getArticleByUserID: () => Promise<void>
-  selectedArticle: IArticle | undefined
-  setSelectedArticle: React.Dispatch<React.SetStateAction<IArticle | undefined>>
+  updateArticle: (id: string, articleData: IArticleUpdate) => Promise<void>
+  selectedArticle: IArticle | null
+  setSelectedArticle: Dispatch<SetStateAction<IArticle | null>>
   createArticle: (articleData: IArticle) => Promise<void>
 }
 
@@ -32,12 +37,10 @@ const ArticleContext = createContext({} as IArticleContextData)
 
 export const useArticleContext = () => useContext(ArticleContext)
 
-export const ArticleProvider: React.FC<ArticleProviderProps> = ({
-  children,
-}) => {
+export const ArticleProvider: FC<ArticleProviderProps> = ({ children }) => {
   const { onLogout } = useAuthContext()
   const [articles, setArticles] = useState<IArticle[]>([])
-  const [selectedArticle, setSelectedArticle] = useState<IArticle>()
+  const [selectedArticle, setSelectedArticle] = useState<IArticle | null>(null)
 
   const getArticles = async () => {
     try {
@@ -82,7 +85,7 @@ export const ArticleProvider: React.FC<ArticleProviderProps> = ({
     }
   }
 
-  const updateArticle = async (id: string, articleData: IArticle) => {
+  const updateArticle = async (id: string, articleData: IArticleUpdate) => {
     try {
       const response = await api.patch(`/articles/${id}`, articleData)
       setArticles((prev) =>
@@ -104,9 +107,8 @@ export const ArticleProvider: React.FC<ArticleProviderProps> = ({
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     getArticles()
-    console.log(articles)
   }, [])
 
   const value = useMemo(
@@ -121,7 +123,14 @@ export const ArticleProvider: React.FC<ArticleProviderProps> = ({
       selectedArticle,
       setSelectedArticle,
     }),
-    [articles, getArticleByUserID, selectedArticle, setSelectedArticle]
+    [
+      articles,
+      getArticles,
+      getArticleByUserID,
+      selectedArticle,
+      setSelectedArticle,
+      updateArticle,
+    ]
   )
 
   return (

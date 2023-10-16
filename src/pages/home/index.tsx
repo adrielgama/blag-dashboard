@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { Eye, Pen, PenBox } from 'lucide-react'
 
@@ -15,11 +15,16 @@ import {
 
 export const Home: React.FC = () => {
   const { user } = useAuthContext()
-  const { articles } = useArticleContext()
+  const { articles, getArticles } = useArticleContext()
 
   const totalViews = getTotalViews(articles)
   const postedArticlesCount = getPostedArticlesCount(articles)
   const draftsCount = getDraftsCount(articles)
+
+  useEffect(() => {
+    getArticles()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="flex flex-col gap-4 container">

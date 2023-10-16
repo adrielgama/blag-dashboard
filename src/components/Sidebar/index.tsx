@@ -51,7 +51,14 @@ export const Sidebar = () => {
         </div>
         <ul className="space-y-2 text-sm font-medium">
           {sidebarItems.map(({ icon, title, route }) => {
-            const isActive = location.pathname === route
+            let isActive = location.pathname === route
+
+            if (
+              title === 'Meus artigos' &&
+              location.pathname.startsWith('/dashboard/edit')
+            ) {
+              isActive = true
+            }
 
             return (
               <li key={title} className="cursor-pointer">

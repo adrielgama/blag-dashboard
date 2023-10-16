@@ -13,3 +13,11 @@ export interface IArticle {
   imageUrl?: string
   views?: number
 }
+
+export interface IArticleUpdate {
+  title: string
+  description: string
+  body: string
+  published: boolean
+  imageUrl: string
+}
