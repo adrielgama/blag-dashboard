@@ -16,8 +16,8 @@ export interface IArticle {
 
 export interface IArticleUpdate {
   title: string
-  description: string
+  description?: string
   body: string
   published: boolean
-  imageUrl: string
+  imageUrl?: string
 }

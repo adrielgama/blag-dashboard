@@ -27,7 +27,7 @@ api.interceptors.response.use(
     const originalRequest = error.config
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
-      const refreshToken = cookies['blag.refreshToken'] // Supondo que o refreshToken também esteja no cookie
+      const refreshToken = cookies['blag.refreshToken']
       try {
         const { data } = await api.post('/users/refresh-token', {
           refreshToken,

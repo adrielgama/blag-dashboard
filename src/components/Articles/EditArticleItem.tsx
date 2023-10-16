@@ -39,7 +39,7 @@ export const EditArticleItem: React.FC = () => {
       }
 
       await updateArticle(articleId, values)
-      await toast.success('Alterações feitas.')
+      toast.success('Alterações feitas.')
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

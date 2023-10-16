@@ -1,8 +1,8 @@
-import { Account } from './index'
+import { IAccount } from '.'
 
 export interface RefreshToken {
   id: string
   expiresIn: number
-  user: Account
+  user: IAccount
   userId: string
 }

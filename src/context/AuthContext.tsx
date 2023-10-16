@@ -12,7 +12,7 @@ import React, {
 import { destroyCookie, parseCookies, setCookie } from 'nookies'
 import { useNavigate } from 'react-router-dom'
 
-import { ILogin, IUser } from '@/types'
+import { ILogin, IUser, IUserUpdate } from '@/types'
 import { api } from '@/utils/httpClient'
 
 interface AuthProviderProps {
@@ -20,11 +20,12 @@ interface AuthProviderProps {
 }
 
 interface IAuthContextData {
-  user: null | ILogin['user'] | IUser
+  user: null | ILogin['user'] | IUser | IUserUpdate
   isAuthenticated: boolean
   onLogin: (email: string, password: string) => Promise<void>
   onLogout: () => void
   refreshToken: () => Promise<void>
+  updateUser: (id: string, userData: IUserUpdate) => Promise<void>
 }
 
 const AuthContext = createContext({} as IAuthContextData)
@@ -63,8 +64,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         email,
         password,
       })
-      console.log('API Response: ', response)
       const { token, refreshToken, user: userComing } = response?.data || {}
+
+      if (userComing && userComing.password) {
+        delete userComing.password
+      }
 
       setCookie(undefined, 'blag.accessToken', token, {
         path: '/',
@@ -95,6 +99,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     navigate('/')
   }, [setUser])
 
+  const updateUser = async (id: string, userData: IUserUpdate) => {
+    try {
+      const response = await api.patch(`/users/${id}`, userData)
+
+      const { user: userComing } = response?.data || {}
+
+      if (userComing && userComing.password) {
+        delete userComing.password
+      }
+
+      setCookie(undefined, 'blag.user', JSON.stringify(userComing), {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30,
+      })
+
+      setUser(userComing)
+    } catch (error) {
+      console.error(`Failed to update user with id ${id}`, error)
+    }
+  }
+
   const refreshToken = useCallback(async () => {
     const storedRefreshToken = parseCookies(undefined, 'blag.refreshToken')
     if (!storedRefreshToken) {
@@ -118,28 +143,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, [handleLogout])
 
-  // useEffect(() => {
-  //   if (!accessToken) return
-
-  //   const checkAuthentication = async () => {
-  //     try {
-  //       const response = await api.get('/users/verify-token', {
-  //         headers: { Authorization: `Bearer ${accessToken}` },
-  //         withCredentials: true,
-  //       })
-
-  //       if (response.status === 200 && !isAuthenticated) {
-  //         setIsAuthenticated(true)
-  //       }
-  //     } catch (error) {
-  //       console.error('Erro ao verificar autenticação:', error)
-  //       setIsAuthenticated(false)
-  //     }
-  //   }
-
-  //   checkAuthentication()
-  // }, [accessToken, isAuthenticated])
-
   const value = useMemo(
     () => ({
       user,
@@ -147,8 +150,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       onLogin: handleLogin,
       onLogout: handleLogout,
       refreshToken,
+      updateUser,
     }),
-    [user, isAuthenticated, handleLogin, handleLogout, refreshToken]
+    [user, isAuthenticated, handleLogin, handleLogout, refreshToken, updateUser]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
