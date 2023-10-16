@@ -16,9 +16,10 @@ import { Separator } from '../ui/separator'
 
 interface ArticleItemProps {
   article: IArticle
+  fromDraft?: boolean | false
 }
 
-const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
+const ArticleItem: React.FC<ArticleItemProps> = ({ article, fromDraft }) => {
   const navigate = useNavigate()
   const { setSelectedArticle, deleteArticle } = useArticleContext()
   const {
@@ -34,7 +35,11 @@ const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
 
   const handleEditNavigation = (article: IArticle) => {
     setSelectedArticle(article)
-    navigate(`/dashboard/edit/${article.id}`)
+    navigate(`/dashboard/edit/${article.id}`, {
+      state: {
+        from: fromDraft ? '/dashboard/drafts' : '/dashboard/articles',
+      },
+    })
   }
 
   const handleDeleteArticle = async () => {

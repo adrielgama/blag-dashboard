@@ -151,15 +151,7 @@ export const ArticleForm: React.FC<ArticleFormProps> = ({
                       Imagem
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="text"
-                        // value={field.value || ''}
-                        // value={field.value || '' || undefined}
-                        // onChange={(e) => {
-                        //   field.onChange(e.target.files?.[0])
-                        // }}
-                      />
+                      <Input {...field} type="text" />
                     </FormControl>
                     <FormDescription>
                       Tamanho max de imagem 3mb (ou link)

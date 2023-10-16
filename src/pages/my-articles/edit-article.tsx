@@ -1,14 +1,23 @@
 import { ArrowLeft } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { EditArticleItem } from '@/components/Articles/EditArticleItem'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 export const EditArticle: React.FC = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+
+  // const handleEditNavigation = () => {
+  //   navigate('/dashboard/articles')
+  // }
 
   const handleEditNavigation = () => {
-    navigate('/dashboard/articles')
+    if (location.state && location.state.from) {
+      navigate(location.state.from)
+    } else {
+      navigate('/dashboard/articles')
+    }
   }
 
   return (
