@@ -30,7 +30,8 @@ interface IArticleContextData {
   updateArticle: (id: string, articleData: IArticleUpdate) => Promise<void>
   selectedArticle: IArticle | null
   setSelectedArticle: Dispatch<SetStateAction<IArticle | null>>
-  createArticle: (articleData: IArticle) => Promise<void>
+  createArticle: (articleData: IArticleUpdate) => Promise<void>
+  deleteArticle: (id: string) => Promise<void>
 }
 
 const ArticleContext = createContext({} as IArticleContextData)
@@ -76,7 +77,7 @@ export const ArticleProvider: FC<ArticleProviderProps> = ({ children }) => {
     }
   }, [])
 
-  const createArticle = async (articleData: IArticle) => {
+  const createArticle = async (articleData: IArticleUpdate) => {
     try {
       const response = await api.post('/articles', articleData)
       setArticles((prev) => [...prev, response.data.articles])
@@ -130,6 +131,7 @@ export const ArticleProvider: FC<ArticleProviderProps> = ({ children }) => {
       selectedArticle,
       setSelectedArticle,
       updateArticle,
+      deleteArticle,
     ]
   )
 

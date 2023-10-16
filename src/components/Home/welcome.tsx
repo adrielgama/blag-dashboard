@@ -20,7 +20,7 @@ export const Welcome: React.FC<IWelcomeProps> = ({ name }) => {
         </p>
         <Button
           className="max-w-xs"
-          onClick={() => navigate('/create-new-post')}
+          onClick={() => navigate('/dashboard/new-post')}
         >
           Escrever um novo artigo
         </Button>

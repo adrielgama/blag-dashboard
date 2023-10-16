@@ -3,10 +3,8 @@ import { useNavigate } from 'react-router-dom'
 
 import { EditArticleItem } from '@/components/Articles/EditArticleItem'
 import { ScrollArea } from '@/components/ui/scroll-area'
-// import { useArticleContext } from '@/context/ArticleContext'
 
 export const EditArticle: React.FC = () => {
-  // const { articles } = useArticleContext()
   const navigate = useNavigate()
 
   const handleEditNavigation = () => {

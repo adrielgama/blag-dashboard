@@ -28,11 +28,11 @@ const updateArticleSchema = z.object({
   title: z
     .string()
     .min(10, { message: 'Mínimo de 10 caracteres' })
-    .max(60, { message: 'Máximo de 60 caracteres' }),
+    .max(80, { message: 'Máximo de 60 caracteres' }),
   description: z
     .string()
     .min(25, { message: 'Mínimo de 25 caracteres' })
-    .max(80, { message: 'Máximo de 80 caracteres' }),
+    .max(150, { message: 'Máximo de 80 caracteres' }),
   body: z
     .string()
     .min(100, { message: 'Mínimo de 100 caracteres' })

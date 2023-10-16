@@ -3,6 +3,7 @@ import React from 'react'
 import { Edit2, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
+import NotFoundImage from '@/assets/not-found-image.png'
 import { useArticleContext } from '@/context/ArticleContext'
 import { IArticle } from '@/types'
 import { formatDate } from '@/utils/formatDate'
@@ -17,7 +18,7 @@ interface ArticleItemProps {
 
 const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
   const navigate = useNavigate()
-  const { setSelectedArticle } = useArticleContext()
+  const { setSelectedArticle, deleteArticle } = useArticleContext()
   const {
     title,
     id,
@@ -28,25 +29,23 @@ const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
     views,
   } = article
 
-  const handleEditNavigation = async (article: IArticle) => {
-    await setSelectedArticle(article)
+  const handleEditNavigation = (article: IArticle) => {
+    setSelectedArticle(article)
     navigate(`/dashboard/edit/${article.id}`)
   }
 
-  const handleDeleteArticle = () => {
-    console.log('DELETE', id)
-    // navigate(`/edit/${id}`)
+  const handleDeleteArticle = async () => {
+    await deleteArticle(article.id)
   }
 
   return (
     <div
       key={id}
-      className="bg-blue-400 flex flex-row justify-between p-8 rounded-md cursor-pointer hover:bg-blue-400/70 mb-2"
-      onClick={() => handleEditNavigation(article)}
+      className="bg-blue-400 flex flex-row justify-between p-8 rounded-md hover:bg-blue-400/70 mb-2"
     >
       <div className="flex gap-4">
         <img
-          src={image}
+          src={image || NotFoundImage}
           alt={`Imagem do artigo: ${title}`}
           className="w-20 h-16 rounded-md object-cover border"
         />
@@ -69,18 +68,22 @@ const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
       </div>
       <div className="flex flex-col gap-2  items-center">
         <p className="text-blue-500 font-bold">Publicado</p>
-        {published ? <ThumbsUp /> : <ThumbsDown />}
+        {published ? (
+          <ThumbsUp className="text-green-500" />
+        ) : (
+          <ThumbsDown className="text-red-400" />
+        )}
       </div>
       <div className="flex flex-col gap-2 items-center">
         <h1 className="text-blue-500 font-bold">Ações</h1>
         <div className="flex h-5 items-center space-x-4 text-sm transition-all text-gray-600">
           <Edit2
-            className="cursor-pointer hover:text-green-700"
+            className="cursor-pointer hover:text-yellow-300"
             onClick={() => handleEditNavigation(article)}
           />
           <Separator orientation="vertical" />
           <Trash2
-            className="cursor-pointer hover:text-red-400"
+            className="cursor-pointer hover:text-red-500"
             onClick={handleDeleteArticle}
           />
         </div>
