@@ -1,9 +1,11 @@
 import axios from 'axios'
 import { parseCookies, setCookie } from 'nookies'
 
+const { VITE_API_URL } = import.meta.env
+
 const cookies = parseCookies()
 const api = axios.create({
-  baseURL: 'https://api.adrielgama.dev',
+  baseURL: VITE_API_URL,
 })
 
 api.interceptors.request.use(

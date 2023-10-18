@@ -8,10 +8,6 @@ export const EditArticle: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  // const handleEditNavigation = () => {
-  //   navigate('/dashboard/articles')
-  // }
-
   const handleEditNavigation = () => {
     if (location.state && location.state.from) {
       navigate(location.state.from)

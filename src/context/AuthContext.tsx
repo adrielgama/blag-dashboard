@@ -24,7 +24,6 @@ interface IAuthContextData {
   isAuthenticated: boolean
   onLogin: (email: string, password: string) => Promise<void>
   onLogout: () => void
-  // refreshToken: () => Promise<void>
   updateUser: (id: string, userData: IUserUpdate) => Promise<void>
 }
 
@@ -66,10 +65,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         password,
       })
       const { token, refreshToken, user: userComing } = response?.data || {}
-
-      // if (userComing && userComing.password) {
-      //   delete userComing.password
-      // }
 
       setCookie(undefined, 'blag.accessToken', token, {
         path: '/',
@@ -121,36 +116,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
-  // const refreshToken = useCallback(async () => {
-  //   const storedRefreshToken = cookies['blag.refreshToken']
-  //   if (!storedRefreshToken) {
-  //     console.error('No refresh token found')
-  //     handleLogout()
-  //     return
-  //   }
-
-  //   try {
-  //     const response = await api.post<ILogin>('/users/refresh-token', {
-  //       refreshToken: storedRefreshToken,
-  //     })
-  //     setCookie(undefined, 'blag.refreshToken', response.data.refreshToken, {
-  //       path: '/',
-  //       maxAge: 60 * 60 * 24 * 30,
-  //     })
-  //   } catch (error) {
-  //     alert('Token refresh error!')
-  //     console.error('Token refresh error:', error)
-  //     handleLogout()
-  //   }
-  // }, [handleLogout])
-
   const value = useMemo(
     () => ({
       user,
       isAuthenticated,
       onLogin: handleLogin,
       onLogout: handleLogout,
-      // refreshToken,
       updateUser,
     }),
     [user, isAuthenticated, handleLogin, handleLogout, updateUser]
