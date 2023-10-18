@@ -30,10 +30,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
   const { updateUser, user: userContext, onLogout } = useAuthContext()
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    console.log(userContext)
-  }, [userContext])
-
   const form = useForm<z.infer<typeof updateProfileSchema>>({
     resolver: zodResolver(updateProfileSchema),
   })

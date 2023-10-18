@@ -2,7 +2,7 @@ import React from 'react'
 
 export const Spinner = () => {
   return (
-    <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+    <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="flex items-center space-x-2">
         <div aria-label="Loading..." role="status">
           <svg

@@ -87,9 +87,10 @@ export const Login = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-evenly container mx-auto p-10">
+      {/* // TODO Adjust this to shown for more time */}
+      <Toaster />
       <Logo />
       {loading && <Spinner />}
-
       <div className="w-96 h-auto bg-blue-400 p-6 rounded-md">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -137,12 +138,13 @@ export const Login = () => {
               )}
             />
             <div className="flex flex-col items-center gap-2 text-center">
-              <p
+              {/* <p
                 className="cursor-pointer text-xs hover:text-slate-300 transition-colors"
+                // TODO FORGOT PASSWORD
                 onClick={() => console.log('click')}
               >
                 Esqueci minha senha
-              </p>
+              </p> */}
               <p
                 className="cursor-pointer hover:text-slate-300 transition-colors"
                 onClick={handleCreateAccount}
@@ -156,7 +158,6 @@ export const Login = () => {
           </form>
         </Form>
       </div>
-      <Toaster />
     </div>
   )
 }

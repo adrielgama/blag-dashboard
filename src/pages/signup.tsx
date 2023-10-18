@@ -37,6 +37,7 @@ export const Signup = () => {
   })
 
   function onSubmit(values: z.infer<typeof signupSchema>) {
+    // TODO CREATE NEW USER
     console.log(values)
   }
 

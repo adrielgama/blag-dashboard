@@ -24,7 +24,7 @@ interface IAuthContextData {
   isAuthenticated: boolean
   onLogin: (email: string, password: string) => Promise<void>
   onLogout: () => void
-  refreshToken: () => Promise<void>
+  // refreshToken: () => Promise<void>
   updateUser: (id: string, userData: IUserUpdate) => Promise<void>
 }
 
@@ -34,6 +34,7 @@ export const useAuthContext = () => useContext(AuthContext)
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const navigate = useNavigate()
+  const cookies = parseCookies()
   const [user, setUser] = useState<ILogin['user'] | IUser | null>(null)
   const isAuthenticated = !!user
 
@@ -49,7 +50,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const {
       'blag.user': userComingFromCookie,
       'blag.refreshToken': refreshToken = null,
-    } = parseCookies()
+    } = cookies
     const parsedUser = parseJSON(userComingFromCookie)
     if (parsedUser && refreshToken) {
       setUser(parsedUser)
@@ -120,28 +121,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
-  const refreshToken = useCallback(async () => {
-    const storedRefreshToken = parseCookies(undefined, 'blag.refreshToken')
-    if (!storedRefreshToken) {
-      console.error('No refresh token found')
-      handleLogout()
-      return
-    }
+  // const refreshToken = useCallback(async () => {
+  //   const storedRefreshToken = cookies['blag.refreshToken']
+  //   if (!storedRefreshToken) {
+  //     console.error('No refresh token found')
+  //     handleLogout()
+  //     return
+  //   }
 
-    try {
-      const response = await api.post<ILogin>('/users/refresh-token', {
-        refreshToken: storedRefreshToken,
-      })
-      setCookie(undefined, 'blag.refreshToken', response.data.refreshToken, {
-        path: '/',
-        maxAge: 60 * 60 * 24 * 30,
-      })
-    } catch (error) {
-      alert('Token refresh error!')
-      console.error('Token refresh error:', error)
-      handleLogout()
-    }
-  }, [handleLogout])
+  //   try {
+  //     const response = await api.post<ILogin>('/users/refresh-token', {
+  //       refreshToken: storedRefreshToken,
+  //     })
+  //     setCookie(undefined, 'blag.refreshToken', response.data.refreshToken, {
+  //       path: '/',
+  //       maxAge: 60 * 60 * 24 * 30,
+  //     })
+  //   } catch (error) {
+  //     alert('Token refresh error!')
+  //     console.error('Token refresh error:', error)
+  //     handleLogout()
+  //   }
+  // }, [handleLogout])
 
   const value = useMemo(
     () => ({
@@ -149,10 +150,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       isAuthenticated,
       onLogin: handleLogin,
       onLogout: handleLogout,
-      refreshToken,
+      // refreshToken,
       updateUser,
     }),
-    [user, isAuthenticated, handleLogin, handleLogout, refreshToken, updateUser]
+    [user, isAuthenticated, handleLogin, handleLogout, updateUser]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
