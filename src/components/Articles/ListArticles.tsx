@@ -4,7 +4,7 @@ import ArticleItem from './ArticleItem'
 import { ScrollArea } from '../ui/scroll-area'
 
 interface ListArticlesProps {
-  articles?: IArticle[]
+  articles?: IArticle[] | undefined
   title?: string
   fromDraft?: boolean | false
 }

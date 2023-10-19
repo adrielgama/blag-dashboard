@@ -9,7 +9,6 @@ import React, {
   Dispatch,
   FC,
   SetStateAction,
-  useEffect,
 } from 'react'
 
 import { parseCookies } from 'nookies'
@@ -25,6 +24,7 @@ interface ArticleProviderProps {
 
 interface IArticleContextData {
   articles: IArticle[]
+  setArticles: Dispatch<SetStateAction<IArticle[]>>
   getArticles: () => Promise<void>
   getArticleByUserID: () => Promise<void>
   updateArticle: (id: string, articleData: IArticleUpdate) => Promise<void>
@@ -43,14 +43,14 @@ export const ArticleProvider: FC<ArticleProviderProps> = ({ children }) => {
   const [articles, setArticles] = useState<IArticle[]>([])
   const [selectedArticle, setSelectedArticle] = useState<IArticle | null>(null)
 
-  const getArticles = async () => {
+  const getArticles = useCallback(async () => {
     try {
       const response = await api.get('/articles')
       setArticles(response.data.articles)
     } catch (error) {
       console.error('Error fetching articles', error)
     }
-  }
+  }, [])
 
   const getArticleById = async (id: string) => {
     try {
@@ -108,13 +108,10 @@ export const ArticleProvider: FC<ArticleProviderProps> = ({ children }) => {
     }
   }
 
-  useEffect(() => {
-    getArticles()
-  }, [])
-
   const value = useMemo(
     () => ({
       articles,
+      setArticles,
       getArticles,
       getArticleById,
       createArticle,
@@ -126,6 +123,7 @@ export const ArticleProvider: FC<ArticleProviderProps> = ({ children }) => {
     }),
     [
       articles,
+      setArticles,
       getArticles,
       getArticleByUserID,
       selectedArticle,

@@ -1,12 +1,15 @@
-import React from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from 'react'
 
 import { Eye, Pen, PenBox } from 'lucide-react'
+import { useQuery } from 'react-query'
 
 import { Stats } from '@/components/Home/stats'
 import { TopArticles } from '@/components/Home/topArticles'
 import { Welcome } from '@/components/Home/welcome'
 import { useArticleContext } from '@/context/ArticleContext'
 import { useAuthContext } from '@/context/AuthContext'
+import { getMyArticles } from '@/services/services'
 import {
   getDraftsCount,
   getPostedArticlesCount,
@@ -15,7 +18,18 @@ import {
 
 export const Home: React.FC = () => {
   const { user } = useAuthContext()
-  const { articles } = useArticleContext()
+  const { setArticles } = useArticleContext()
+
+  const { data } = useQuery(['my-articles'], async () => getMyArticles(), {
+    keepPreviousData: true,
+    refetchOnWindowFocus: false,
+  })
+
+  const articles = data?.articles
+
+  useEffect(() => {
+    return setArticles(articles || [])
+  }, [articles])
 
   const totalViews = getTotalViews(articles)
   const postedArticlesCount = getPostedArticlesCount(articles)
