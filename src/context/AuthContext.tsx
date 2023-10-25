@@ -12,8 +12,8 @@ import React, {
 import { destroyCookie, parseCookies, setCookie } from 'nookies'
 import { useNavigate } from 'react-router-dom'
 
+import { api } from '@/lib/httpClient'
 import { ILogin, IUser, IUserUpdate } from '@/types'
-import { api } from '@/utils/httpClient'
 
 interface AuthProviderProps {
   children: ReactNode

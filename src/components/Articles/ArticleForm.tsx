@@ -1,13 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from 'react'
+import { ChangeEventHandler, useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
+import toast, { Toaster } from 'react-hot-toast'
 import { z } from 'zod'
 
+import { uploadImageToCloudinary } from '@/lib/imgbb'
 import { IArticle } from '@/types'
 import { updateArticleSchema } from '@/utils/schema'
 
+import { Spinner } from '../spinner'
 import { TextareaEditor } from '../Textarea'
 import { Button } from '../ui/button'
 import {
@@ -31,6 +34,52 @@ export const ArticleForm: React.FC<ArticleFormProps> = ({
   article,
   onSubmit,
 }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [previewImage, setPreviewImage] = useState<string | null>(
+    article?.imageUrl || null
+  )
+  const [oldImageUrl, setOldImageUrl] = useState<string | null>(
+    article?.imageUrl || null
+  )
+  const [inputImageUrl, setInputImageUrl] = useState<string | null>(null)
+
+  const MAX_FILE_SIZE = 3 * 1024 * 1024
+  const handleImageChange: ChangeEventHandler<HTMLInputElement> = async (
+    event
+  ) => {
+    const file = event.target.files![0]
+
+    if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error(
+          'Tamanho do arquivo excedido. Tamanho máximo permitido é de 3MB.'
+        )
+        return
+      }
+
+      setIsLoading(true)
+
+      try {
+        const imageUrl = await uploadImageToCloudinary(file)
+
+        if (!oldImageUrl) {
+          setOldImageUrl(previewImage)
+        }
+
+        setInputImageUrl(imageUrl)
+        setPreviewImage(imageUrl)
+        form.setValue('imageUrl', imageUrl)
+        setIsLoading(false)
+      } catch (error) {
+        toast.error('Erro ao fazer upload da imagem.')
+        console.error('Error uploading image:', error)
+        setIsLoading(false)
+      } finally {
+        toast.success('Imagem carregada.')
+      }
+    }
+  }
+
   const form = useForm<z.infer<typeof updateArticleSchema>>({
     resolver: zodResolver(updateArticleSchema),
   })
@@ -48,8 +97,18 @@ export const ArticleForm: React.FC<ArticleFormProps> = ({
 
   return (
     <div className="h-auto bg-blue-400 p-6 rounded-md">
+      <Toaster />
       <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className=" w-full">
+        <form
+          onSubmit={form.handleSubmit((data) => {
+            if (inputImageUrl) {
+              data.imageUrl = inputImageUrl
+            }
+            onSubmit(data)
+          })}
+          className="w-full"
+        >
+          {isLoading && <Spinner />}
           <div className="flex flex-row space-x-8">
             <div className="space-y-8 w-full">
               <FormField
@@ -142,28 +201,52 @@ export const ArticleForm: React.FC<ArticleFormProps> = ({
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="imageUrl"
-                render={({ field }) => (
-                  <FormItem className="bg-white p-4 rounded-md">
-                    <FormLabel className="font-bold text-blue-600 text-lg">
-                      Imagem
-                    </FormLabel>
-                    <FormControl>
-                      <Input {...field} type="text" />
-                    </FormControl>
-                    <FormDescription>
-                      Tamanho max de imagem 3mb (ou link)
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
+              <div>
+                {previewImage && (
+                  <img
+                    src={previewImage}
+                    alt="Preview"
+                    className="mb-4 h-24 w-24 object-cover object-center rounded-md shadow-md border-blue-300 border"
+                  />
                 )}
-              />
+
+                <FormField
+                  control={form.control}
+                  name="imageUrl"
+                  render={({ field }) => (
+                    <FormItem className="bg-white p-4 rounded-md">
+                      <FormLabel className="font-bold text-blue-600 text-lg">
+                        Imagem
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          name={field.name}
+                          ref={field.ref}
+                          onChange={handleImageChange}
+                          type="file"
+                          accept="image/*"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Tamanho max de imagem 3mb
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
           </div>
           <div className="flex flex-row items-center gap-2 text-center">
-            <Button type="reset" className="mt-6 w-[180px]">
+            <Button
+              type="reset"
+              onClick={() => {
+                form.reset()
+                setPreviewImage(oldImageUrl)
+                setOldImageUrl(null)
+              }}
+              className="mt-6 w-[180px]"
+            >
               Limpar
             </Button>
             <Button type="submit" className="mt-6 w-[180px]">

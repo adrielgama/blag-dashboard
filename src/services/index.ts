@@ -1,5 +1,5 @@
+import { api } from '@/lib/httpClient'
 import { IArticle } from '@/types'
-import { api } from '@/utils/httpClient'
 
 type IArticles = {
   articles: IArticle[]

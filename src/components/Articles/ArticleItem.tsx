@@ -94,7 +94,6 @@ const ArticleItem: React.FC<ArticleItemProps> = ({ article, fromDraft }) => {
             <PopoverTrigger asChild>
               <Trash2
                 className="cursor-pointer hover:text-red-500"
-                // onClick={handleDeleteArticle}
                 onClick={() => setIsOpen(true)}
               />
             </PopoverTrigger>

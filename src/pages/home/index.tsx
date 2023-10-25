@@ -9,7 +9,7 @@ import { TopArticles } from '@/components/Home/topArticles'
 import { Welcome } from '@/components/Home/welcome'
 import { useArticleContext } from '@/context/ArticleContext'
 import { useAuthContext } from '@/context/AuthContext'
-import { getMyArticles } from '@/services/services'
+import { getMyArticles } from '@/services/'
 import {
   getDraftsCount,
   getPostedArticlesCount,

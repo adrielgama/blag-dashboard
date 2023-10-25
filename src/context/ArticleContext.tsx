@@ -13,8 +13,8 @@ import React, {
 
 import { parseCookies } from 'nookies'
 
+import { api } from '@/lib/httpClient'
 import { IArticle, IArticleUpdate } from '@/types'
-import { api } from '@/utils/httpClient'
 
 import { useAuthContext } from './AuthContext'
 
