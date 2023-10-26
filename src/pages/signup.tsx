@@ -2,11 +2,14 @@ import React, { useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff } from 'lucide-react'
+import ReCAPTCHA from 'react-google-recaptcha'
 import { useForm } from 'react-hook-form'
+import toast, { Toaster } from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import * as z from 'zod'
 
 import { Logo } from '@/components/logo'
+import { Spinner } from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -17,13 +20,18 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { api } from '@/lib/httpClient'
+import { ISignup } from '@/types'
 import { signupSchema } from '@/utils/schema'
+
+const { VITE_RECAPTCHA_KEY } = import.meta.env
 
 export const Signup = () => {
   const navigate = useNavigate()
 
-  // const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [recaptchaValue, setRecaptchaValue] = useState<string | null>(null)
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword)
 
@@ -36,9 +44,33 @@ export const Signup = () => {
     },
   })
 
-  function onSubmit(values: z.infer<typeof signupSchema>) {
-    // TODO CREATE NEW USER
-    console.log(values)
+  const onSubmit = async (values: z.infer<typeof signupSchema>) => {
+    if (!recaptchaValue) {
+      toast.error('Por favor, verifique o reCAPTCHA.')
+      return
+    }
+    setLoading(true)
+    try {
+      await api.post<ISignup>('/users/new', {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        recaptchaValue,
+      })
+
+      toast.success('Conta criada com sucesso!')
+
+      setTimeout(() => {
+        navigate('/')
+      }, 2000)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error('Ocorreu algum erro ao tentar criar sua conta.')
+      setLoading(false)
+    } finally {
+      form.reset()
+      setLoading(false)
+    }
   }
 
   const handleLogin = () => {
@@ -48,6 +80,8 @@ export const Signup = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-evenly container mx-auto p-10">
       <Logo />
+      <Toaster />
+      {loading && <Spinner />}
 
       <div className="w-96 h-auto bg-blue-400 p-6 rounded-md">
         <Form {...form}>
@@ -109,6 +143,10 @@ export const Signup = () => {
               )}
             />
             <div className="flex flex-col items-center gap-2 text-center">
+              <ReCAPTCHA
+                sitekey={VITE_RECAPTCHA_KEY}
+                onChange={(value) => setRecaptchaValue(value)}
+              />
               <Button type="submit" className="w-[180px]">
                 Criar conta
               </Button>

@@ -3,11 +3,18 @@
 import { useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Trash2 } from 'lucide-react'
 import { FormProvider, useForm } from 'react-hook-form'
 import toast, { Toaster } from 'react-hot-toast'
 import { z } from 'zod'
 
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@/components/ui/popover'
 import { useAuthContext } from '@/context/AuthContext'
+import { api } from '@/lib/httpClient'
 import { IUserUpdate } from '@/types'
 import { updateProfileSchema } from '@/utils/schema'
 
@@ -29,6 +36,7 @@ interface ProfileFormProps {
 export const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
   const { updateUser, user: userContext, onLogout } = useAuthContext()
   const [loading, setLoading] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
   const form = useForm<z.infer<typeof updateProfileSchema>>({
     resolver: zodResolver(updateProfileSchema),
@@ -66,6 +74,27 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
     } finally {
       setLoading(false)
     }
+  }
+
+  const onDeleteAccount = async () => {
+    setLoading(true)
+    try {
+      await api.delete(`/users/${userContext?.id}`)
+      toast.success('Conta excluída com sucesso!')
+      setTimeout(() => {
+        onLogout()
+      }, 2000)
+      setLoading(false)
+    } catch (error: any) {
+      console.log('ERROR: ', error)
+      toast.error('Ocorreu algum erro ao tentar excluir sua conta.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDeleteProfile = async () => {
+    await onDeleteAccount()
   }
 
   return (
@@ -148,9 +177,36 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
                   )}
                 />
               </div>
-              <Button type="submit" className="mt-6 w-[180px]">
+              <Button type="submit" className="mt-6 w-[180px] mr-4">
                 Atualizar perfil
               </Button>
+              <Popover open={isOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    onClick={() => setIsOpen(true)}
+                    className="mt-6 w-[180px]"
+                  >
+                    Excluir minha conta
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="bg-white p-4 rounded-md shadow-lg grid gap-4 place-items-center">
+                  <p className="text-center text-sm">
+                    Tem certeza que deseja excluir sua conta?
+                  </p>
+                  <div className="flex gap-4">
+                    <Button
+                      className="bg-blue-100 hover:bg-blue-300"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button variant="destructive" onClick={handleDeleteProfile}>
+                      <Trash2 className="mr-2" size={18} /> Excluir
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </form>
           </FormProvider>
         </div>
