@@ -15,8 +15,8 @@ export async function uploadImageToCloudinary(file: File): Promise<string> {
   try {
     const response = await axios.post(CLOUDINARY_ENDPOINT, formData)
 
-    if (response.data && response.data.secure_url) {
-      return response.data.secure_url
+    if (response.data && response.data.url) {
+      return response.data.url
     } else {
       throw new Error('Failed to parse response from Cloudinary')
     }

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ChangeEventHandler, useEffect, useState } from 'react'
+import { ChangeEventHandler, useCallback, useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
@@ -44,56 +44,55 @@ export const ArticleForm: React.FC<ArticleFormProps> = ({
   const [inputImageUrl, setInputImageUrl] = useState<string | null>(null)
 
   const MAX_FILE_SIZE = 3 * 1024 * 1024
-  const handleImageChange: ChangeEventHandler<HTMLInputElement> = async (
-    event
-  ) => {
-    const file = event.target.files![0]
 
-    if (file) {
-      if (file.size > MAX_FILE_SIZE) {
+  const uploadImage = async (file: File) => {
+    setIsLoading(true)
+    try {
+      const imageUrl = await uploadImageToCloudinary(file)
+      return imageUrl
+    } catch (error) {
+      toast.error('Erro ao fazer upload da imagem.')
+      console.error('Error uploading image:', error)
+    } finally {
+      setIsLoading(false)
+      toast.success('Imagem carregada.')
+    }
+  }
+
+  const handleImageChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    async (event) => {
+      const file = event.target.files![0]
+      if (file && file.size <= MAX_FILE_SIZE) {
+        const imageUrl = await uploadImage(file)
+        if (imageUrl) {
+          if (!oldImageUrl) setOldImageUrl(previewImage)
+          setInputImageUrl(imageUrl)
+          setPreviewImage(imageUrl)
+          form.setValue('imageUrl', imageUrl)
+        }
+      } else {
         toast.error(
           'Tamanho do arquivo excedido. Tamanho máximo permitido é de 3MB.'
         )
-        return
       }
-
-      setIsLoading(true)
-
-      try {
-        const imageUrl = await uploadImageToCloudinary(file)
-
-        if (!oldImageUrl) {
-          setOldImageUrl(previewImage)
-        }
-
-        setInputImageUrl(imageUrl)
-        setPreviewImage(imageUrl)
-        form.setValue('imageUrl', imageUrl)
-        setIsLoading(false)
-      } catch (error) {
-        toast.error('Erro ao fazer upload da imagem.')
-        console.error('Error uploading image:', error)
-        setIsLoading(false)
-      } finally {
-        toast.success('Imagem carregada.')
-      }
-    }
-  }
+    },
+    [oldImageUrl, previewImage]
+  )
 
   const form = useForm<z.infer<typeof updateArticleSchema>>({
     resolver: zodResolver(updateArticleSchema),
   })
 
   useEffect(() => {
-    form.reset({
+    const defaultValues = article || {
       title: '',
       description: '',
       body: '',
       published: false,
       imageUrl: '',
-      ...article,
-    })
-  }, [article, form.reset])
+    }
+    form.reset(defaultValues)
+  }, [article])
 
   return (
     <div className="h-auto bg-blue-400 p-6 rounded-md">

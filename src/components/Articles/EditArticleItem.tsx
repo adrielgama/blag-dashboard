@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
 import toast, { Toaster } from 'react-hot-toast'
 import { z } from 'zod'
 
@@ -15,18 +13,6 @@ import { Skeleton } from '../ui/skeleton'
 export const EditArticleItem: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const { selectedArticle, updateArticle, getArticles } = useArticleContext()
-
-  const form = useForm<z.infer<typeof updateArticleSchema>>({
-    resolver: zodResolver(updateArticleSchema),
-  })
-
-  useEffect(() => {
-    if (selectedArticle) {
-      form.reset({
-        ...selectedArticle,
-      })
-    }
-  }, [selectedArticle, form.reset])
 
   const onSubmit = async (values: z.infer<typeof updateArticleSchema>) => {
     setLoading(true)
