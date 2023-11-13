@@ -46,12 +46,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   useEffect(() => {
-    const {
-      'blag.user': userComingFromCookie,
-      'blag.refreshToken': refreshToken = null,
-    } = cookies
+    const { 'blag.user': userComingFromCookie } = cookies
     const parsedUser = parseJSON(userComingFromCookie)
-    if (parsedUser && refreshToken) {
+    if (parsedUser) {
       setUser(parsedUser)
     } else {
       handleLogout()
@@ -64,13 +61,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         email,
         password,
       })
-      const { token, refreshToken, user: userComing } = response?.data || {}
+      const { token, user: userComing } = response?.data || {}
 
       setCookie(undefined, 'blag.accessToken', token, {
-        path: '/',
-        maxAge: 60 * 60 * 24 * 30,
-      })
-      setCookie(undefined, 'blag.refreshToken', refreshToken, {
         path: '/',
         maxAge: 60 * 60 * 24 * 30,
       })
@@ -90,7 +83,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const handleLogout = useCallback(() => {
     setUser(null)
     destroyCookie(undefined, 'blag.accessToken')
-    destroyCookie(undefined, 'blag.refreshToken')
     destroyCookie(undefined, 'blag.user')
     navigate('/')
   }, [setUser])
