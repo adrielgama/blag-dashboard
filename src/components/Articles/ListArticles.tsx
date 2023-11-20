@@ -20,7 +20,9 @@ export const ListArticles: React.FC<ListArticlesProps> = ({
       <ScrollArea>
         {articles?.length === 0 && (
           <div className="text-center">
-            Você ainda não há artigos publicados
+            {fromDraft
+              ? 'Nenhum artigo em rascunho'
+              : 'Você ainda não possui artigos publicados'}
           </div>
         )}
         {articles?.map((article) => (
