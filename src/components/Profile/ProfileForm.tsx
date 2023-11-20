@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Trash2 } from 'lucide-react'
 import { FormProvider, useForm } from 'react-hook-form'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { z } from 'zod'
 
 import {
@@ -97,121 +97,116 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
     await onDeleteAccount()
   }
 
-  return (
-    <div>
-      {loading ? (
-        <div className="flex items-start space-x-4">
-          <div className="space-y-2">
-            <Skeleton className="h-24 w-[60vw]" />
-            <Skeleton className="h-24 w-[60vw]" />
-            <Skeleton className="h-24 w-[60vw]" />
+  return loading ? (
+    <div className="flex items-start space-x-4">
+      <div className="space-y-2">
+        <Skeleton className="h-24 w-[60vw]" />
+        <Skeleton className="h-24 w-[60vw]" />
+        <Skeleton className="h-24 w-[60vw]" />
+      </div>
+    </div>
+  ) : (
+    <div className="h-auto bg-blue-400 p-6 rounded-md">
+      <FormProvider {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className=" w-full"
+          autoComplete="off"
+        >
+          <div className="flex flex-col space-y-8">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="bg-white rounded-md p-4">
+                  <FormLabel className="font-bold text-blue-600 text-lg">
+                    Nome
+                  </FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="Seu nome" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem className="bg-white rounded-md p-4">
+                  <FormLabel className="font-bold text-blue-600 text-lg">
+                    E-mail
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="seu@email.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={() => (
+                <FormItem className="bg-white rounded-md p-4">
+                  <FormLabel className="font-bold text-blue-100 text-lg">
+                    Senha
+                  </FormLabel>
+                  <FormControl>
+                    <>
+                      <Input
+                        type="password"
+                        autoComplete="new-password"
+                        placeholder="********"
+                        disabled
+                      />
+                      <p className="text-sm text-blue-100 italic">
+                        Para alterar sua senha entre em contato com o
+                        administrador do sistema
+                      </p>
+                    </>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
-        </div>
-      ) : (
-        <div className="h-auto bg-blue-400 p-6 rounded-md">
-          <FormProvider {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className=" w-full"
-              autoComplete="off"
-            >
-              <div className="flex flex-col space-y-8">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem className="bg-white rounded-md p-4">
-                      <FormLabel className="font-bold text-blue-600 text-lg">
-                        Nome
-                      </FormLabel>
-                      <FormControl>
-                        <Input type="text" placeholder="Seu nome" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem className="bg-white rounded-md p-4">
-                      <FormLabel className="font-bold text-blue-600 text-lg">
-                        E-mail
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="seu@email.com"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={() => (
-                    <FormItem className="bg-white rounded-md p-4">
-                      <FormLabel className="font-bold text-blue-100 text-lg">
-                        Senha
-                      </FormLabel>
-                      <FormControl>
-                        <>
-                          <Input
-                            type="password"
-                            autoComplete="new-password"
-                            placeholder="********"
-                            disabled
-                          />
-                          <p className="text-sm text-blue-100 italic">
-                            Para alterar sua senha entre em contato com o
-                            administrador do sistema
-                          </p>
-                        </>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <Button type="submit" className="mt-6 w-[180px] mr-4">
-                Atualizar perfil
+          <Button type="submit" className="mt-6 w-[180px] mr-4">
+            Atualizar perfil
+          </Button>
+          <Popover open={isOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="destructive"
+                onClick={() => setIsOpen(true)}
+                className="mt-6 w-[180px]"
+              >
+                Excluir minha conta
               </Button>
-              <Popover open={isOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="destructive"
-                    onClick={() => setIsOpen(true)}
-                    className="mt-6 w-[180px]"
-                  >
-                    Excluir minha conta
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="bg-white p-4 rounded-md shadow-lg grid gap-4 place-items-center">
-                  <p className="text-center text-sm">
-                    Tem certeza que deseja excluir sua conta?
-                  </p>
-                  <div className="flex gap-4">
-                    <Button
-                      className="bg-blue-100 hover:bg-blue-300"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Cancelar
-                    </Button>
-                    <Button variant="destructive" onClick={handleDeleteProfile}>
-                      <Trash2 className="mr-2" size={18} /> Excluir
-                    </Button>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </form>
-          </FormProvider>
-        </div>
-      )}
-      <Toaster />
+            </PopoverTrigger>
+            <PopoverContent className="bg-white p-4 rounded-md shadow-lg grid gap-4 place-items-center">
+              <p className="text-center text-sm">
+                Tem certeza que deseja excluir sua conta?
+              </p>
+              <div className="flex gap-4">
+                <Button
+                  className="bg-blue-100 hover:bg-blue-300"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button variant="destructive" onClick={handleDeleteProfile}>
+                  <Trash2 className="mr-2" size={18} /> Excluir
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </form>
+      </FormProvider>
     </div>
   )
 }

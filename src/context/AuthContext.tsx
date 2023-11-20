@@ -56,33 +56,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [])
 
   const handleLogin = async (email: string, password: string) => {
-    try {
-      const response = await api.post<ILogin>('/users/login', {
-        email,
-        password,
-      })
-      const { token, user: userComing } = response?.data || {}
+    const response = await api.post<ILogin>('/users/login', {
+      email,
+      password,
+    })
+    const { token, user: userComing } = response?.data || {}
 
-      setCookie(undefined, 'blag.accessToken', token, {
-        path: '/',
-        maxAge: 60 * 60 * 24 * 30,
-      })
-      setCookie(undefined, 'blag.user', JSON.stringify(userComing), {
-        path: '/',
-        maxAge: 60 * 60 * 24 * 30,
-      })
+    setCookie(undefined, 'blag.accessToken', token, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30,
+    })
+    setCookie(undefined, 'blag.user', JSON.stringify(userComing), {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30,
+    })
 
-      setUser(userComing)
-      api.defaults.timeout = 5000
-      api.defaults.headers.Authorization = `Bearer ${token}`
-    } catch (error) {
-      console.error('Ops, deu ruim: ', error)
-    }
+    setUser(userComing)
+    api.defaults.timeout = 5000
+    api.defaults.headers.Authorization = `Bearer ${token}`
   }
 
   const handleLogout = useCallback(() => {
     setUser(null)
     destroyCookie(undefined, 'blag.accessToken')
+    destroyCookie(undefined, 'blag.refreshToken')
     destroyCookie(undefined, 'blag.user')
     navigate('/')
   }, [setUser])

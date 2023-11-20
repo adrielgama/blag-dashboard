@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff } from 'lucide-react'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { useForm } from 'react-hook-form'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import * as z from 'zod'
 
@@ -80,7 +80,6 @@ export const Signup = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-evenly container mx-auto p-10">
       <Logo />
-      <Toaster />
       {loading && <Spinner />}
 
       <div className="w-96 h-auto bg-blue-400 p-6 rounded-md">

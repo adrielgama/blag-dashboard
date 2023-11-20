@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from 'react'
 
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { z } from 'zod'
 
 import { useArticleContext } from '@/context/ArticleContext'
@@ -37,25 +37,20 @@ export const EditArticleItem: React.FC = () => {
     }
   }
 
-  return (
-    <div>
-      {loading ? (
-        <div className="flex items-start space-x-4">
-          <div className="space-y-2">
-            <Skeleton className="h-10 w-[60vw]" />
-            <Skeleton className="h-10 w-[60vw]" />
-            <Skeleton className="h-96 w-[60vw]" />
-            <Skeleton className="h-12 w-[60vw]" />
-          </div>
-          <div className="space-y-2">
-            <Skeleton className="h-12 w-[20vw]" />
-            <Skeleton className="h-28 w-[20vw]" />
-          </div>
-        </div>
-      ) : (
-        <ArticleForm article={selectedArticle!} onSubmit={onSubmit} />
-      )}
-      <Toaster />
+  return loading ? (
+    <div className="flex items-start space-x-4">
+      <div className="space-y-2">
+        <Skeleton className="h-10 w-[60vw]" />
+        <Skeleton className="h-10 w-[60vw]" />
+        <Skeleton className="h-96 w-[60vw]" />
+        <Skeleton className="h-12 w-[60vw]" />
+      </div>
+      <div className="space-y-2">
+        <Skeleton className="h-12 w-[20vw]" />
+        <Skeleton className="h-28 w-[20vw]" />
+      </div>
     </div>
+  ) : (
+    <ArticleForm article={selectedArticle!} onSubmit={onSubmit} />
   )
 }

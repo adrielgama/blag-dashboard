@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
 import { Eye, EyeOff } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import * as z from 'zod'
 
@@ -47,10 +47,8 @@ export const Login = () => {
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     setLoading(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
       await onLogin(values.email, values.password)
       toast.success('Login realizado com sucesso!')
-
       navigate('/dashboard')
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -72,6 +70,8 @@ export const Login = () => {
       } else {
         toast.error(ERROR_MESSAGES.DEFAULT)
       }
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -87,8 +87,6 @@ export const Login = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-evenly container mx-auto p-10">
-      {/* // TODO Adjust this to shown for more time */}
-      <Toaster />
       <Logo />
       {loading && <Spinner />}
       <div className="w-96 h-auto bg-blue-400 p-6 rounded-md">

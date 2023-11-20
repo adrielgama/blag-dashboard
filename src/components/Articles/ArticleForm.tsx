@@ -3,7 +3,7 @@ import { ChangeEventHandler, useCallback, useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { z } from 'zod'
 
 import { uploadImageToCloudinary } from '@/lib/imgbb'
@@ -96,7 +96,6 @@ export const ArticleForm: React.FC<ArticleFormProps> = ({
 
   return (
     <div className="h-auto bg-blue-400 p-6 rounded-md">
-      <Toaster />
       <FormProvider {...form}>
         <form
           onSubmit={form.handleSubmit((data) => {
