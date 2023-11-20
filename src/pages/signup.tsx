@@ -153,7 +153,7 @@ export const Signup = () => {
                 className="cursor-pointer hover:text-slate-300 transition-colors"
                 onClick={handleLogin}
               >
-                Fazer login
+                Já possui uma conta? <strong>Fazer login</strong>
               </a>
             </div>
           </form>

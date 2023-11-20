@@ -136,22 +136,25 @@ export const Login = () => {
               )}
             />
             <div className="flex flex-col items-center gap-2 text-center">
-              {/* <p
-                className="cursor-pointer text-xs hover:text-slate-300 transition-colors"
-                // TODO FORGOT PASSWORD
-                onClick={() => console.log('click')}
+              <Button
+                type="submit"
+                className="mb-6 w-[180px] hover:bg-blue-400 hover:border transition-colors"
               >
-                Esqueci minha senha
-              </p> */}
+                Entrar
+              </Button>
               <p
                 className="cursor-pointer hover:text-slate-300 transition-colors"
                 onClick={handleCreateAccount}
               >
-                Criar uma conta
+                Não tem uma conta? <strong>Criar uma</strong>
               </p>
-              <Button type="submit" className="mt-6 w-[180px]">
-                Entrar
-              </Button>
+              <a
+                className="cursor-pointer text-xs text-slate-500/60 hover:text-slate-300 transition-colors"
+                href="mailto:adrielgama@gmail.com"
+                rel="noreferrer"
+              >
+                Esqueceu sua senha?
+              </a>
             </div>
           </form>
         </Form>
