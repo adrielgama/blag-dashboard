@@ -226,7 +226,7 @@ export const ArticleForm: React.FC<ArticleFormProps> = ({
                         />
                       </FormControl>
                       <FormDescription>
-                        Tamanho max de imagem 3mb
+                        Tamanho max. de imagem 3mb
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
