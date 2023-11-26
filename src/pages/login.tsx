@@ -12,6 +12,14 @@ import { Logo } from '@/components/logo'
 import { Spinner } from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogHeader,
+} from '@/components/ui/dialog'
+import {
   Form,
   FormControl,
   FormField,
@@ -20,6 +28,8 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { ToastAction } from '@/components/ui/toast'
+import { useToast } from '@/components/ui/use-toast'
 import { useAuthContext } from '@/context/AuthContext'
 import {
   ERROR_MESSAGES,
@@ -27,12 +37,28 @@ import {
 } from '@/utils/apiError'
 import { loginSchema } from '@/utils/schema'
 
+import { Cookies } from './cookies'
+
 export const Login = () => {
   const navigate = useNavigate()
   const { onLogin, isAuthenticated } = useAuthContext()
+  const { toast: toastShadcn } = useToast()
 
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [shownCookiesToast, setShownCookiesToast] = useState(false)
+
+  useEffect(() => {
+    setShownCookiesToast(true)
+    toastShadcn({
+      title: 'Este site usa cookies 🍪',
+      description:
+        'Para garantir a melhor experência, usamos cookies neste site.',
+      action: <ToastAction altText="Tudo bem">Tudo bem</ToastAction>,
+    })
+    setShownCookiesToast(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword)
 
@@ -89,6 +115,7 @@ export const Login = () => {
     <div className="flex min-h-screen flex-col items-center justify-evenly container mx-auto p-10">
       <Logo />
       {loading && <Spinner />}
+      <span>{shownCookiesToast}</span>
       <div className="w-96 h-auto bg-blue-400 p-6 rounded-md">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -159,6 +186,19 @@ export const Login = () => {
           </form>
         </Form>
       </div>
+      <Dialog>
+        <DialogTrigger className="text-xs text-gray-600">
+          Veja aqui os cookies
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Cookie Policy for BLAG</DialogTitle>
+            <DialogDescription>
+              <Cookies />
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
