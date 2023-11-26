@@ -19,7 +19,7 @@ export const CreateArticle: React.FC = () => {
     setLoading(true)
     try {
       await createArticle(values)
-      toast.success('Article criado com sucesso!')
+      toast.success('Artigo criado com sucesso!')
     } catch (error: any) {
       console.log('ERROR: ', error)
       toast.error('Ocorreu algum erro ao tentar criar seu artigo.')
