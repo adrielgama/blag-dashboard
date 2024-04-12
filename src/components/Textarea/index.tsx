@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { Editor } from '@tinymce/tinymce-react'
 import { Editor as TinyMCEEEditor } from 'tinymce'
+
+import { Skeleton } from '../ui/skeleton'
 
 const { VITE_TINY_API_KEY } = import.meta.env
 
@@ -16,6 +18,7 @@ export const TextareaEditor: React.FC<TextareaEditorProps> = ({
   onChange,
 }) => {
   const editorRef = useRef<TinyMCEEEditor | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   const initConfig = useMemo(
     () => ({
@@ -58,6 +61,7 @@ export const TextareaEditor: React.FC<TextareaEditorProps> = ({
 
   const handleInit = useCallback((_: any, editor: TinyMCEEEditor) => {
     editorRef.current = editor
+    setIsLoading(false)
   }, [])
 
   const handleEditorChange = (content: string) => {
@@ -65,12 +69,20 @@ export const TextareaEditor: React.FC<TextareaEditorProps> = ({
   }
 
   return (
-    <Editor
-      apiKey={VITE_TINY_API_KEY}
-      onInit={handleInit}
-      value={value}
-      onEditorChange={handleEditorChange}
-      init={initConfig}
-    />
+    <>
+      {isLoading && (
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-auto" />
+          <Skeleton className="h-44 w-auto" />
+        </div>
+      )}
+      <Editor
+        apiKey={VITE_TINY_API_KEY}
+        onInit={handleInit}
+        value={value}
+        onEditorChange={handleEditorChange}
+        init={initConfig}
+      />
+    </>
   )
 }

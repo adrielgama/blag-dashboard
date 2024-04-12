@@ -20,10 +20,14 @@ export const Home: React.FC = () => {
   const { user } = useAuthContext()
   const { setArticles } = useArticleContext()
 
-  const { data } = useQuery(['my-articles'], async () => getMyArticles(), {
-    keepPreviousData: true,
-    refetchOnWindowFocus: false,
-  })
+  const { data, isLoading } = useQuery(
+    ['my-articles'],
+    async () => getMyArticles(),
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+    }
+  )
 
   const articles = data?.articles
 
@@ -38,16 +42,27 @@ export const Home: React.FC = () => {
   return (
     <div className="flex flex-col gap-4 container">
       <div className="flex flex-row gap-4">
-        <Welcome name={user?.name || user?.email} />
+        <Welcome name={user?.name || user?.email} isLoading={isLoading} />
         {articles && (
           <div className="flex flex-col gap-4">
-            <Stats icon={<Eye />} title="Total views" value={totalViews} />
+            <Stats
+              icon={<Eye />}
+              title="Total views"
+              value={totalViews}
+              isLoading={isLoading}
+            />
             <Stats
               icon={<Pen />}
               title="Artigos postados"
               value={postedArticlesCount}
+              isLoading={isLoading}
             />
-            <Stats icon={<PenBox />} title="Rascunhos" value={draftsCount} />
+            <Stats
+              icon={<PenBox />}
+              title="Rascunhos"
+              value={draftsCount}
+              isLoading={isLoading}
+            />
           </div>
         )}
       </div>

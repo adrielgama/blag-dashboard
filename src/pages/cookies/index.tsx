@@ -1,5 +1,3 @@
-import React from 'react'
-
 export const Cookies = () => {
   return (
     <div className="max-h-96 overflow-y-scroll mt-4">

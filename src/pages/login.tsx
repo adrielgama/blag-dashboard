@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
@@ -46,17 +46,26 @@ export const Login = () => {
 
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [shownCookiesToast, setShownCookiesToast] = useState(false)
 
   useEffect(() => {
-    setShownCookiesToast(true)
-    toastShadcn({
-      title: 'Este site usa cookies 🍪',
-      description:
-        'Para garantir a melhor experência, usamos cookies neste site.',
-      action: <ToastAction altText="Tudo bem">Tudo bem</ToastAction>,
-    })
-    setShownCookiesToast(false)
+    const cookiesAccepted = localStorage.getItem('cookies-accepted')
+    if (!cookiesAccepted) {
+      toastShadcn({
+        title: 'Este site usa cookies 🍪',
+        description:
+          'Para garantir a melhor experência, usamos cookies neste site.',
+        action: (
+          <ToastAction
+            altText="Tudo bem"
+            onClick={() => {
+              localStorage.setItem('cookies-accepted', 'true')
+            }}
+          >
+            Tudo bem
+          </ToastAction>
+        ),
+      })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -115,7 +124,6 @@ export const Login = () => {
     <div className="flex min-h-screen flex-col items-center justify-evenly container mx-auto p-10">
       <Logo />
       {loading && <Spinner />}
-      <span>{shownCookiesToast}</span>
       <div className="w-96 h-auto bg-blue-400 p-6 rounded-md">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
