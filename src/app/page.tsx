@@ -1,7 +1,16 @@
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between">
-      <h1>New Blag Dashboard</h1>
-    </main>
-  )
+'use client'
+
+import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+
+import Spinner from '@/components/spinner'
+
+export default function HomePage() {
+  const { status } = useSession()
+  const router = useRouter()
+
+  if (status === 'authenticated') return router.push('/dashboard')
+  if (status === 'unauthenticated') return router.push('/auth/login')
+
+  return <Spinner />
 }
