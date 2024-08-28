@@ -12,7 +12,7 @@ interface StatsProps {
 
 export default function Stats({ icon, title, value, isLoading }: StatsProps) {
   return (
-    <div className="flex gap-4 rounded-md bg-white px-20 py-4 dark:bg-zinc-800">
+    <div className="flex gap-4 rounded-md bg-white px-4 py-4 dark:bg-zinc-800 xl:px-16">
       <span className="text-text h-fit w-fit rounded-md bg-zinc-100 p-2 text-4xl dark:bg-zinc-900">
         {icon}
       </span>

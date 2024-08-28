@@ -1,15 +1,16 @@
 import TableArticlesBase from '@/components/table-article-base'
 import { IArticle } from '@/types/article'
 
-export default function TableTopArticles({
+export default function TableArticles({
   articles,
 }: {
   articles: IArticle[] | undefined
 }) {
   return (
     <TableArticlesBase
-      title="Top Artigos"
-      description="Os 10 artigos mais acessados"
+      title="Meus Artigos"
+      description="Aqui você pode ver todos os seus artigos criados"
+      showAuthor
       articles={articles}
     />
   )

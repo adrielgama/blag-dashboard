@@ -1,15 +1,7 @@
 'use client'
 import { ReactNode, useState } from 'react'
 
-import {
-  Home,
-  Menu,
-  LogOut,
-  // LucideIcon,
-  PlusCircle,
-  BookOpen,
-  SquarePen,
-} from 'lucide-react'
+import { Home, Menu, LogOut, PlusCircle, BookOpen } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
@@ -73,9 +65,6 @@ const SidebarContent = () => {
           <NavItem href="/articles" icon={BookOpen}>
             Meus artigos
           </NavItem>
-          <NavItem href="/drafts" icon={SquarePen}>
-            Rascunhos
-          </NavItem>
         </nav>
       </div>
       <div className="mt-auto p-4">
@@ -117,12 +106,12 @@ export default function Sidebar({ children }: SidebarProps) {
           <Button
             variant="outline"
             size="icon"
-            className="fixed left-4 top-4 z-40 md:hidden"
+            className="fixed right-4 top-4 z-40 md:hidden"
           >
             <Menu className="h-4 w-4" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-64 p-0">
+        <SheetContent side="right" className="w-64 p-0">
           <SidebarContent />
         </SheetContent>
       </Sheet>

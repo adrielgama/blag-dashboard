@@ -15,8 +15,8 @@ export default function Welcome() {
   const router = useRouter()
 
   return (
-    <Card className="mr-10 flex gap-8 border-none dark:bg-zinc-900">
-      <CardHeader className="flex flex-col justify-evenly text-3xl font-semibold">
+    <Card className="mr-10 flex w-full flex-col gap-8 border-none dark:bg-zinc-900 md:flex-row">
+      <CardHeader className="flex flex-col justify-evenly space-y-4 text-3xl font-semibold">
         <CardTitle>Olá, {session?.user?.name ?? '{name}'}</CardTitle>
         <CardDescription>
           Bem-vindo(a) de volta ao seu espaço criativo! 🎉 Estamos animados para
@@ -34,7 +34,7 @@ export default function Welcome() {
         alt="Welcome"
         width={300}
         height={300}
-        className="h-auto"
+        className="hidden h-auto lg:size-72 xl:block"
       />
     </Card>
   )
