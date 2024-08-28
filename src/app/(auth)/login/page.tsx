@@ -1,16 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { signIn, useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import api from '@/app/api/axios'
 import Logo from '@/components/logo'
+import Spinner from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -22,60 +23,62 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
-import { registerFormSchema } from './_schema/register.schema'
+import { loginFormSchema } from './_schema/login.schema'
 
-export default function RegisterPage() {
+export default function SignInPage() {
+  const { status } = useSession()
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const form = useForm<z.infer<typeof registerFormSchema>>({
-    resolver: zodResolver(registerFormSchema),
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.push('/dashboard')
+    } else if (status === 'unauthenticated') {
+      router.push('/login')
+    }
+  }, [status, router])
+
+  const form = useForm<z.infer<typeof loginFormSchema>>({
+    resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      name: '',
       email: '',
       password: '',
     },
   })
 
-  const handleRegister = async (values: z.infer<typeof registerFormSchema>) => {
-    try {
-      const res = await api.post('/users/new', values)
+  const handleLogin = async (values: z.infer<typeof loginFormSchema>) => {
+    setLoading(true)
 
-      if (res.status !== 201) {
-        toast.error('Ocorreu algum erro ao tentar registrar o usuário')
-      }
+    const result = await signIn('credentials', {
+      redirect: false,
+      email: values.email,
+      password: values.password,
+      // callbackUrl: '/dashboard',
+    })
 
-      toast.success('Usuário registrado com sucesso')
-      router.push('/auth/login')
-    } catch (error) {
-      toast.error('Falha ao tentar registrar usuário')
+    setLoading(false)
+
+    if (result?.ok) {
+      toast.success('Login efetuado com sucesso!')
+      router.push('/dashboard')
+    } else {
+      toast.error('Falha ao efetuar login!', {
+        description: 'verifique suas credenciais e tente novamente',
+      })
     }
   }
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword)
 
-  return (
+  return loading ? (
+    <Spinner />
+  ) : (
     <div className="flex h-screen flex-col items-center justify-center space-y-4">
       <Logo />
-      <div className="w-full max-w-sm rounded-md p-6 dark:bg-zinc-800">
+      <div className="w-full max-w-sm rounded-md bg-zinc-100 p-6 dark:bg-zinc-800">
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleRegister)}
-            className="space-y-4"
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-4">
             <FormField
               control={form.control}
               name="email"
@@ -121,15 +124,22 @@ export default function RegisterPage() {
             />
             <div className="flex flex-col items-center gap-2 text-center">
               <Button type="submit" size="sm" className="my-6 px-20">
-                Criar conta
+                Entrar
               </Button>
               <Button
                 variant="link"
                 className="cursor-pointer text-sm transition-colors hover:text-zinc-300"
-                onClick={() => router.push('/auth/login')}
+                onClick={() => router.push('/register')}
               >
-                Já possui uma conta? Entrar
+                Não tem uma conta? Criar uma
               </Button>
+              <a
+                className="cursor-pointer text-xs text-zinc-500 transition-colors hover:text-zinc-300"
+                href="mailto:adrielgama@gmail.com"
+                rel="noreferrer"
+              >
+                Esqueceu sua senha?
+              </a>
             </div>
           </form>
         </Form>

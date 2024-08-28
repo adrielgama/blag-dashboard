@@ -1,12 +1,15 @@
 import { Inter } from 'next/font/google'
 
-import { ThemeProvider } from '@/components/theme-provider'
+import { Toaster } from '@/components/ui/sonner'
+import {
+  ThemeProvider,
+  ClientSessionProvider,
+  QueryClientProvider,
+} from '@/providers'
 
 import type { Metadata } from 'next'
 
 import './globals.css'
-import ClientSessionProvider from '@/components/client-session-provider'
-import { Toaster } from '@/components/ui/sonner'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,9 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <ClientSessionProvider>{children}</ClientSessionProvider>
-          <Toaster />
+        <ThemeProvider>
+          <QueryClientProvider>
+            <ClientSessionProvider>{children}</ClientSessionProvider>
+            <Toaster richColors />
+          </QueryClientProvider>
         </ThemeProvider>
       </body>
     </html>
