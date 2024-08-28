@@ -2,6 +2,7 @@ import React from 'react'
 
 import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 import { MoreVertical } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -44,9 +45,18 @@ export default function TableArticlesBase({
   orderByViews = false,
   articles,
 }: TableArticlesBaseProps) {
+  const router = useRouter()
   const isPublished = (article: IArticle) => article && article.published
   const sortedArticles = articles?.sort((a, b) => b.views - a.views)
   const showArticles = orderByViews ? sortedArticles : articles
+
+  const handleEdit = (id: string) => {
+    router.push(`/articles/${id}`)
+  }
+
+  const handleDelete = (id: string) => {
+    console.log('Delete', id)
+  }
 
   return (
     <div className="mt-4">
@@ -114,8 +124,16 @@ export default function TableArticlesBase({
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Ações</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Editar</DropdownMenuItem>
-                        <DropdownMenuItem>Deletar</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleEdit(article.id)}
+                        >
+                          Editar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(article.id)}
+                        >
+                          Deletar
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

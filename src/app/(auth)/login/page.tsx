@@ -109,7 +109,7 @@ export default function SignInPage() {
                         placeholder="******"
                         {...field}
                       />
-                      <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3 text-gray-400">
+                      <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3 text-zinc-400">
                         {showPassword ? (
                           <Eye onClick={togglePasswordVisibility} />
                         ) : (
