@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import ReCAPTCHA from 'react-google-recaptcha'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -24,9 +25,12 @@ import {
 import { Input } from '@/components/ui/input'
 import { registerFormSchema } from '@/schema/register.schema'
 
+const RecaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_KEY
+
 export default function RegisterPage() {
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
+  const [recaptchaValue, setRecaptchaValue] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   const form = useForm<z.infer<typeof registerFormSchema>>({
@@ -39,21 +43,25 @@ export default function RegisterPage() {
   })
 
   const handleRegister = async (values: z.infer<typeof registerFormSchema>) => {
+    if (!recaptchaValue) {
+      toast.error('Por favor, verifique o reCAPTCHA.')
+      return
+    }
+
+    setLoading(true)
+
     try {
-      setLoading(true)
-
-      const res = await api.post('/users/new', values)
-
-      setLoading(false)
-
-      if (res.status !== 201) {
-        toast.error('Ocorreu algum erro ao tentar registrar o usuário')
-      }
+      await api.post('/users/new', {
+        ...values,
+        recaptchaValue,
+      })
 
       toast.success('Usuário registrado com sucesso')
       router.push('/login')
     } catch (error) {
       toast.error('Falha ao tentar registrar usuário')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -68,7 +76,7 @@ export default function RegisterPage() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleRegister)}
-            className="space-y-4"
+            className="space-y-1 lg:space-y-4"
           >
             <FormField
               control={form.control}
@@ -127,12 +135,17 @@ export default function RegisterPage() {
               )}
             />
             <div className="flex flex-col items-center gap-2 text-center">
-              <Button type="submit" size="sm" className="my-6 px-20">
+              <ReCAPTCHA
+                sitekey={RecaptchaKey!}
+                onChange={(value) => setRecaptchaValue(value)}
+              />
+              <Button type="submit" size="sm" className="my-2 px-20 lg:my-6">
                 Criar conta
               </Button>
               <Button
+                type="button"
                 variant="link"
-                className="cursor-pointer text-sm transition-colors hover:text-zinc-300"
+                className="cursor-pointer text-sm transition-colors hover:text-zinc-500 dark:hover:text-zinc-300"
                 onClick={() => router.push('/login')}
               >
                 Já possui uma conta? Entrar
