@@ -25,7 +25,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { registerFormSchema } from '@/schema/register.schema'
 
-const RecaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_KEY
+const RecaptchaKey = process.env.RECAPTCHA_KEY
 
 export default function RegisterPage() {
   const router = useRouter()

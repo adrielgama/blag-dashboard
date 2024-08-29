@@ -11,7 +11,7 @@ export interface TextareaEditorProps {
   onChange?: (content: string) => void
 }
 
-const TinyMCEKey = process.env.NEXT_PUBLIC_TINY_API_KEY
+const TinyMCEKey = process.env.TINY_API_KEY
 
 export default function TextareaEditor({
   value,
