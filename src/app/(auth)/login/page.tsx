@@ -126,14 +126,15 @@ export default function SignInPage() {
                 Entrar
               </Button>
               <Button
+                type="button"
                 variant="link"
-                className="cursor-pointer text-sm transition-colors hover:text-zinc-300"
+                className="cursor-pointer text-sm transition-colors hover:text-zinc-500 dark:hover:text-zinc-300"
                 onClick={() => router.push('/register')}
               >
                 Não tem uma conta? Criar uma
               </Button>
               <a
-                className="cursor-pointer text-xs text-zinc-500 transition-colors hover:text-zinc-300"
+                className="cursor-pointer text-xs text-zinc-500 transition-colors hover:text-zinc-400 dark:hover:text-zinc-300"
                 href="mailto:adrielgama@gmail.com"
                 rel="noreferrer"
               >

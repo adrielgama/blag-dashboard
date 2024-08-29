@@ -112,9 +112,11 @@ export default function ArticleForm({ form, article }: ArticleFormProps) {
           </div>
           <FormMessage>{formState.errors.imageUrl?.message}</FormMessage>
         </FormItem>
-        <Button type="submit" className="mt-4">
-          {article?.id ? 'Atualizar Artigo' : 'Criar Artigo'}
-        </Button>
+        <div className="flex items-center justify-center">
+          <Button type="submit" className="mt-4 w-full lg:max-w-sm">
+            {article?.id ? 'Atualizar Artigo' : 'Criar Artigo'}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   )

@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 
-export default function Welcome() {
+export default function Welcome({ hasArticles }: { hasArticles: boolean }) {
   const { data: session } = useSession()
   const router = useRouter()
 
@@ -19,14 +19,16 @@ export default function Welcome() {
       <CardHeader className="flex flex-col justify-evenly space-y-4 text-3xl font-semibold">
         <CardTitle>Olá, {session?.user?.name ?? '{name}'}</CardTitle>
         <CardDescription>
-          Bem-vindo(a) de volta ao seu espaço criativo! 🎉 Estamos animados para
-          ver as maravilhas que você vai compartilhar com o mundo hoje.
+          Bem-vindo(a) ao seu espaço criativo! 🎉 Estamos animados para ver as
+          maravilhas que você vai compartilhar com o mundo hoje.
         </CardDescription>
         <Button
           className="max-w-xs"
           onClick={() => router.push('/new-article')}
         >
-          Escrever um novo artigo
+          {hasArticles
+            ? 'Escrever um novo artigo'
+            : 'Crie o seu primeiro artigo'}
         </Button>
       </CardHeader>
       <Image
