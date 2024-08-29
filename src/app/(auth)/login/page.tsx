@@ -22,8 +22,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-
-import { loginFormSchema } from './_schema/login.schema'
+import { loginFormSchema } from '@/schema/login.schema'
 
 export default function SignInPage() {
   const { status } = useSession()

@@ -22,8 +22,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-
-import { registerFormSchema } from './_schema/register.schema'
+import { registerFormSchema } from '@/schema/register.schema'
 
 export default function RegisterPage() {
   const router = useRouter()
