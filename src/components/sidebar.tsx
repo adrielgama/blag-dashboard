@@ -68,9 +68,7 @@ const SidebarContent = () => {
         </nav>
       </div>
       <div className="mt-auto p-4">
-        <div className="flex items-center gap-4">
-          <ButtonModeToggle variant={'ghost'} />
-        </div>
+        <ButtonModeToggle variant="ghost" size="sm" className="mb-2 w-full" />
         <div className="flex items-center gap-4 border-t pt-4 dark:border-zinc-800">
           <Avatar>
             <AvatarFallback>{session?.user?.name?.charAt(0)}</AvatarFallback>

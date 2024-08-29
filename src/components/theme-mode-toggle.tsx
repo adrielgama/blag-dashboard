@@ -42,9 +42,11 @@ export function DropdownModeToggle() {
 export function ButtonModeToggle({
   variant = 'outline',
   className,
+  size = 'icon',
 }: {
   variant?: ButtonProps['variant']
   className?: string
+  size?: ButtonProps['size']
 }) {
   const { theme, setTheme } = useTheme()
 
@@ -60,7 +62,7 @@ export function ButtonModeToggle({
     <div className="flex items-center gap-2">
       <Button
         variant={variant}
-        size="icon"
+        size={size}
         className={className}
         onClick={toggleTheme}
       >
