@@ -34,6 +34,7 @@ import {
 } from '@/components/ui/table'
 import { IArticle } from '@/types/article'
 
+import NotFoundArticles from './not-found-articles'
 import {
   Drawer,
   DrawerClose,
@@ -53,11 +54,10 @@ interface TableArticlesBaseProps {
 }
 
 export default function TableArticlesBase({
-  title,
-  description,
   showAuthor = false,
   orderByViews = false,
   articles,
+  ...props
 }: TableArticlesBaseProps) {
   const router = useRouter()
   const queryClient = useQueryClient()
@@ -110,8 +110,8 @@ export default function TableArticlesBase({
     <div className="mt-4">
       <Card className="border-none dark:bg-zinc-900">
         <CardHeader>
-          <CardTitle>{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
+          <CardTitle>{props.title}</CardTitle>
+          <CardDescription>{props.description}</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -191,9 +191,9 @@ export default function TableArticlesBase({
               ))}
             </TableBody>
           </Table>
+          {!articles?.length && <NotFoundArticles />}
         </CardContent>
       </Card>
-
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerContent>
           <div className="mx-auto mt-4 w-full max-w-sm">

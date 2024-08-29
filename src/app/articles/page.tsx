@@ -8,14 +8,12 @@ import { useArticles } from '@/hooks/useArticles'
 const TableArticles = lazy(() => import('./_components/table-articles'))
 
 export default function ArticlesPage() {
-  const { data, error } = useArticles()
-
-  if (error) return <div>Error loading articles</div>
+  const { data } = useArticles()
 
   return (
     <Sidebar>
       <Suspense fallback={<Spinner />}>
-        {data ? <TableArticles articles={data} /> : <Spinner />}
+        <TableArticles articles={data} />
       </Suspense>
     </Sidebar>
   )

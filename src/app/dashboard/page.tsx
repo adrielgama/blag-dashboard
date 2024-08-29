@@ -17,9 +17,7 @@ const Stats = lazy(() => import('./_component/stats'))
 const TableTopArticles = lazy(() => import('./_component/table-top-articles'))
 
 export default function DashboardPage() {
-  const { data, error, isLoading } = useArticles()
-
-  if (error) return <div>Error loading articles</div>
+  const { data, isLoading } = useArticles()
 
   const totalViews = getTotalViews(data)
   const postedArticlesCount = getPostedArticlesCount(data)
@@ -33,7 +31,7 @@ export default function DashboardPage() {
         <>
           <div className="flex flex-col gap-4 md:flex-row">
             <Suspense fallback={<Spinner />}>
-              <Welcome />
+              <Welcome hasArticles={!!data?.length} />
             </Suspense>
             <Suspense fallback={<Spinner />}>
               <div className="flex flex-col gap-4">
