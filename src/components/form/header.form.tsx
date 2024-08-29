@@ -2,19 +2,20 @@ import React from 'react'
 
 import { ChevronLeft } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '../ui/button'
 import {
-  TooltipProvider,
   Tooltip,
-  TooltipTrigger,
   TooltipContent,
-} from '@/components/ui/tooltip'
+  TooltipProvider,
+  TooltipTrigger,
+} from '../ui/tooltip'
 
 interface HeaderProps {
   onClick?: () => void
+  title: string
 }
 
-export default function Header({ onClick }: HeaderProps) {
+export default function Header({ onClick, title }: HeaderProps) {
   return (
     <div className="flex items-center gap-2 py-4">
       <TooltipProvider delayDuration={0}>
@@ -31,7 +32,7 @@ export default function Header({ onClick }: HeaderProps) {
       </TooltipProvider>
 
       <h1 className="text-2xl font-bold text-zinc-600 dark:text-zinc-200">
-        Edite o seu artigo
+        {title}
       </h1>
     </div>
   )

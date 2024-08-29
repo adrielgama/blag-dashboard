@@ -15,28 +15,17 @@ export const useArticles = () => {
     queryFn: async () => await fetchArticles(userId!),
     enabled: !!userId,
     refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 15, // 15 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes
   })
 }
 
 export const useArticleDetail = (id: string | undefined) => {
-  const { data: session } = useSession()
-  const userId = session?.user?.id
   const queryClient = useQueryClient()
 
   const articles = queryClient.getQueryData<IArticle[]>(['articles'])
   let article = articles?.find((article) => article.id === id)
 
-  const {
-    data: fetchedArticles,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ['articles', userId],
-    queryFn: async () => await fetchArticles(userId!),
-    enabled: !!userId,
-    refetchOnWindowFocus: false,
-  })
+  const { data: fetchedArticles, error, isLoading } = useArticles()
 
   if (!article && fetchedArticles) {
     article = fetchedArticles.find((article) => article.id === id)

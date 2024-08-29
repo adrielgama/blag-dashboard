@@ -35,6 +35,7 @@ export default function Welcome() {
         width={300}
         height={300}
         className="hidden h-auto lg:size-72 xl:block"
+        priority
       />
     </Card>
   )
