@@ -1,7 +1,7 @@
-export const Logo = () => {
+export default function Logo() {
   return (
-    <h1 className="text-[2.5em] rounded-md shadow-md bg-gray-950 w-16 h-16 flex items-end pl-2 text-slate-400">
+    <div className="flex h-16 w-16 items-end rounded-md bg-zinc-800 p-2 text-3xl text-white dark:bg-zinc-800">
       b
-    </h1>
+    </div>
   )
 }

@@ -13,21 +13,19 @@ Welcome to the Blog Dashboard, an advanced tool designed for bloggers and conten
 
 ## ✨ Features
 
-- Vite
+- Next.js 14
 - TypeScript
 - Axios
-- Marked
-- Nookies
-- React Google Recaptcha
-- Tailwind
+- NextAuth
+- Tailwind CSS
 - Tinymce
 - ZOD
+- React Query (TanStack Query)
+- React Hook Form
+- ShadCN UI
+- Google Recaptcha
 
-<center>
 
-![GIF Using site](https://i.imgur.com/eh5kDDj.gif)
-
-</center>
 
 #
 
@@ -53,6 +51,43 @@ Welcome to the Blog Dashboard, an advanced tool designed for bloggers and conten
 - **Content Syndication**: Share your articles with other websites through our API.
 - **Extended Reach**: Broaden your audience by integrating your blog content with external platforms.
 - **Developer Friendly**: Access comprehensive API documentation for easy integration.
+
+### Responsive
+- **Seamless Adaptation**: Enjoy a consistent and optimized experience across all devices, whether you are on a desktop, tablet, or mobile.
+- **User-Centric Layouts**: The interface automatically adjusts to different screen sizes, ensuring readability and usability at all times.
+- **Optimized Performance**: Faster loading times and smooth interactions on every device, enhancing user satisfaction and engagement.
+
+#
+
+## 📚 Usage Guide
+
+### 1. Create Your Account
+
+To start using the platform, follow these steps to create your account:
+
+1. **Go to the Registration Page**: Navigate to the registration page on the website.
+2. **Fill in Your Details**: Provide your personal information, such as your name, email, and password.
+3. **Log In to Your Account**: After verification, log in to the platform using your email and password.
+
+### 2. Create Your Article
+
+Once your account is set up, you can start creating your articles:
+
+1. **Navigate to the Articles Section**: In the dashboard, go to the "New article" section.
+2. **Click on "Create New Article"**: Fill in the required fields such as title, description, article body, and cover image (optional).
+3. **Save as Draft or Publish**: You can save the article as a draft to finish later or publish it immediately.
+4. **Manage Your Articles**: Edit or delete your articles as needed in the "My Articles" section.
+
+### 3. Use the API Following the Documentation
+
+If you are a developer looking to integrate or automate operations using our API, follow these steps:
+
+1. **Access the API Documentation**: Full documentation is available at [Swagger API documentation](https://api.adrielgama.dev/).
+2. **Generate Your API Credentials**: If required, generate and obtain your API credentials for authentication.
+3. **Make API Calls**: Use the endpoints described in the documentation to create, edit, delete, or query articles directly via the API.
+4. **Test and Integrate**: Use tools like Postman or cURL to test the API calls before integrating them into your application.
+
+This quick guide will help you effectively use the platform, whether for content creation or integration with external systems.
 
 #
 
