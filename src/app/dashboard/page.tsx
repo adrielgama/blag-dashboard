@@ -19,7 +19,6 @@ const TableTopArticles = lazy(() => import('./_component/table-top-articles'))
 export default function DashboardPage() {
   const { data, error, isLoading } = useArticles()
 
-  if (isLoading) return <Spinner />
   if (error) return <div>Error loading articles</div>
 
   const totalViews = getTotalViews(data)
@@ -28,36 +27,42 @@ export default function DashboardPage() {
 
   return (
     <Sidebar>
-      <div className="flex flex-col gap-4 md:flex-row">
-        <Suspense fallback={<Spinner />}>
-          <Welcome />
-        </Suspense>
-        <Suspense fallback={<Spinner />}>
-          <div className="flex flex-col gap-4">
-            <Stats
-              icon={<Eye />}
-              title="Total views"
-              value={totalViews}
-              isLoading={isLoading}
-            />
-            <Stats
-              icon={<Pen />}
-              title="Artigos postados"
-              value={postedArticlesCount}
-              isLoading={isLoading}
-            />
-            <Stats
-              icon={<PenBox />}
-              title="Rascunhos"
-              value={draftsCount}
-              isLoading={isLoading}
-            />
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <>
+          <div className="flex flex-col gap-4 md:flex-row">
+            <Suspense fallback={<Spinner />}>
+              <Welcome />
+            </Suspense>
+            <Suspense fallback={<Spinner />}>
+              <div className="flex flex-col gap-4">
+                <Stats
+                  icon={<Eye />}
+                  title="Total views"
+                  value={totalViews}
+                  isLoading={isLoading}
+                />
+                <Stats
+                  icon={<Pen />}
+                  title="Artigos postados"
+                  value={postedArticlesCount}
+                  isLoading={isLoading}
+                />
+                <Stats
+                  icon={<PenBox />}
+                  title="Rascunhos"
+                  value={draftsCount}
+                  isLoading={isLoading}
+                />
+              </div>
+            </Suspense>
           </div>
-        </Suspense>
-      </div>
-      <Suspense fallback={<Spinner />}>
-        <TableTopArticles articles={data} />
-      </Suspense>
+          <Suspense fallback={<Spinner />}>
+            <TableTopArticles articles={data} />
+          </Suspense>
+        </>
+      )}
     </Sidebar>
   )
 }

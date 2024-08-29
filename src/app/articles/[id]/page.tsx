@@ -1,13 +1,16 @@
 'use client'
+import { lazy, Suspense } from 'react'
 
 import { useParams, useRouter } from 'next/navigation'
 
-import { ArticleForm, Header } from '@/components/form'
+import { Header } from '@/components/form'
 import Sidebar from '@/components/sidebar'
 import Spinner from '@/components/spinner'
 import { Form } from '@/components/ui/form'
 import { useArticleForm } from '@/hooks/useArticleForm'
 import { useArticleDetail } from '@/hooks/useArticles'
+
+const ArticleForm = lazy(() => import('@/components/form/article.form'))
 
 export default function ArticleDetail() {
   const router = useRouter()
@@ -27,7 +30,9 @@ export default function ArticleDetail() {
           <Header onClick={() => router.back()} title="Edite o seu artigo" />
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <ArticleForm form={form} article={article} />
+              <Suspense fallback={<Spinner />}>
+                <ArticleForm form={form} />
+              </Suspense>{' '}
             </form>
           </Form>
         </>
