@@ -20,23 +20,32 @@ export default function ArticleDetail() {
   const { article, isLoading, error } = useArticleDetail(id as string)
   const { form, onSubmit, isLoading: isLoadingForm } = useArticleForm(article!)
 
+  if (isLoading || isLoadingForm) {
+    return (
+      <Sidebar>
+        <Spinner />
+      </Sidebar>
+    )
+  }
+
+  if (error) {
+    return (
+      <Sidebar>
+        <p>Erro ao carregar o artigo.</p>
+      </Sidebar>
+    )
+  }
+
   return (
     <Sidebar>
-      {error && <p>Erro ao carregar o artigo.</p>}
-      {isLoading || isLoadingForm ? (
-        <Spinner />
-      ) : (
-        <>
-          <Header onClick={() => router.back()} title="Edite o seu artigo" />
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <Suspense fallback={<Spinner />}>
-                <ArticleForm form={form} />
-              </Suspense>{' '}
-            </form>
-          </Form>
-        </>
-      )}
+      <Header onClick={() => router.back()} title="Edite o seu artigo" />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <Suspense fallback={<Spinner />}>
+            <ArticleForm form={form} />
+          </Suspense>
+        </form>
+      </Form>
     </Sidebar>
   )
 }

@@ -15,22 +15,24 @@ export default function NewArticle() {
   const router = useRouter()
   const { form, onSubmit, isLoading } = useArticleForm()
 
+  if (isLoading) {
+    return (
+      <Sidebar>
+        <Spinner />
+      </Sidebar>
+    )
+  }
+
   return (
     <Sidebar>
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        <>
-          <Header onClick={() => router.back()} title="Criar um novo artigo" />
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <Suspense fallback={<Spinner />}>
-                <ArticleForm form={form} />
-              </Suspense>
-            </form>
-          </Form>
-        </>
-      )}
+      <Header onClick={() => router.back()} title="Criar um novo artigo" />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <Suspense fallback={<Spinner />}>
+            <ArticleForm form={form} />
+          </Suspense>
+        </form>
+      </Form>
     </Sidebar>
   )
 }
