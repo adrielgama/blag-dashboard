@@ -25,6 +25,8 @@ interface ArticleFormProps {
 }
 
 export default function ArticleForm({ form, article }: ArticleFormProps) {
+  const { formState } = form
+
   const handleEditorChange = (content: string) => {
     form.setValue('body', content)
   }
@@ -63,7 +65,7 @@ export default function ArticleForm({ form, article }: ArticleFormProps) {
           <FormControl>
             <Input {...form.register('title')} placeholder="Título do artigo" />
           </FormControl>
-          <FormMessage />
+          <FormMessage>{formState.errors.title?.message}</FormMessage>
         </FormItem>
         <FormItem>
           <FormLabel>Descrição</FormLabel>
@@ -73,7 +75,7 @@ export default function ArticleForm({ form, article }: ArticleFormProps) {
               placeholder="Descrição do artigo"
             />
           </FormControl>
-          <FormMessage />
+          <FormMessage>{formState.errors.description?.message}</FormMessage>
         </FormItem>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -108,7 +110,7 @@ export default function ArticleForm({ form, article }: ArticleFormProps) {
                 </div>
               )}
           </div>
-          <FormMessage />
+          <FormMessage>{formState.errors.imageUrl?.message}</FormMessage>
         </FormItem>
         <Button type="submit" className="mt-4">
           {article?.id ? 'Atualizar Artigo' : 'Criar Artigo'}

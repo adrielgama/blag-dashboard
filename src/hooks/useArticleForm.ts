@@ -2,11 +2,13 @@
 import { useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
+import { createArticle, updateArticle } from '@/app/api/articles'
 import { articleFormSchema } from '@/schema/article.schema'
 import { IArticle, IArticleUpdate } from '@/types/article'
 
@@ -14,6 +16,7 @@ export const useArticleForm = (articleData: IArticle | null = null) => {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { data: session } = useSession()
+  const queryClient = useQueryClient()
 
   const form = useForm<IArticleUpdate>({
     resolver: zodResolver(articleFormSchema),
@@ -27,32 +30,34 @@ export const useArticleForm = (articleData: IArticle | null = null) => {
   })
 
   const onSubmit = async (values: IArticleUpdate) => {
+    const accessToken = session?.accessToken
+
+    if (!accessToken) {
+      toast.error('Sessão expirada. Por favor, faça login novamente.')
+      router.push('/login')
+      return
+    }
+
     setIsLoading(true)
 
     try {
-      const method = articleData?.id ? 'PATCH' : 'POST'
-      const url = articleData?.id
-        ? `${process.env.NEXT_PUBLIC_API_URL}/articles/${articleData.id}`
-        : `${process.env.NEXT_PUBLIC_API_URL}/articles`
+      let savedArticle: IArticle
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.accessToken}`,
-        },
-        body: JSON.stringify(values),
-      })
-
-      if (!response.ok) {
-        throw new Error('Erro ao salvar o artigo')
+      if (articleData?.id) {
+        savedArticle = await updateArticle(articleData.id, values, accessToken)
+      } else {
+        savedArticle = await createArticle(values, accessToken)
       }
 
-      const updatedArticle = await response.json()
+      await queryClient.invalidateQueries({
+        queryKey: ['articles'],
+        refetchType: 'all',
+      })
+
       toast.success(
         `Artigo ${articleData?.id ? 'atualizado' : 'criado'} com sucesso!`
       )
-      router.push(`/articles/${updatedArticle.article.id}`)
+      router.push(`/articles/${savedArticle.id}`)
     } catch (error) {
       toast.error('Falha ao salvar o artigo!')
     } finally {

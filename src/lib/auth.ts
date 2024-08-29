@@ -13,8 +13,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        console.log('Credentials:', credentials)
-
         try {
           const res = await fetch(`${baseURL}/users/login`, {
             method: 'POST',
@@ -33,7 +31,6 @@ export const authOptions: NextAuthOptions = {
           }
 
           const data = await res.json()
-          console.log('API Response:', data)
 
           if (!res.ok) {
             console.error('Failed to authenticate', data)

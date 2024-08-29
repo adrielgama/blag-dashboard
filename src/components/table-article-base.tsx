@@ -1,9 +1,12 @@
 import React from 'react'
 
-import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
-import { MoreVertical } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
+import { Loader2, MoreVertical } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import { toast } from 'sonner'
 
+import { deleteArticle } from '@/app/api/articles'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -19,6 +22,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {
   Table,
@@ -29,6 +33,16 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { IArticle } from '@/types/article'
+
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from './ui/drawer'
 
 interface TableArticlesBaseProps {
   title: string
@@ -46,16 +60,50 @@ export default function TableArticlesBase({
   articles,
 }: TableArticlesBaseProps) {
   const router = useRouter()
+  const queryClient = useQueryClient()
+  const { data: session } = useSession()
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false)
+  const [articleToDelete, setArticleToDelete] = React.useState<IArticle | null>(
+    null
+  )
+  const [isDeleting, setIsDeleting] = React.useState(false)
+  const accessToken = session?.accessToken
+
   const isPublished = (article: IArticle) => article && article.published
   const sortedArticles = articles?.sort((a, b) => b.views - a.views)
-  const showArticles = orderByViews ? sortedArticles : articles
+  const showArticles = orderByViews ? sortedArticles?.slice(0, 10) : articles
+
+  if (!accessToken) {
+    toast.error('Sessão expirada. Por favor, faça login novamente.')
+    router.push('/login')
+    return
+  }
 
   const handleEdit = (id: string) => {
     router.push(`/articles/${id}`)
   }
 
-  const handleDelete = (id: string) => {
-    console.log('Delete', id)
+  const handleDeleteClick = (article: IArticle) => {
+    setArticleToDelete(article)
+    setIsDrawerOpen(true)
+  }
+
+  const handleDeleteConfirm = async () => {
+    setIsDeleting(true)
+    try {
+      if (articleToDelete?.id) {
+        await deleteArticle(articleToDelete.id, accessToken)
+
+        await queryClient.invalidateQueries({ queryKey: ['articles'] })
+
+        toast.success('Artigo excluído com sucesso!')
+        setIsDrawerOpen(false)
+      }
+    } catch (error) {
+      toast.error('Falha ao excluir o artigo!')
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   return (
@@ -83,7 +131,9 @@ export default function TableArticlesBase({
                 <TableRow key={article.id}>
                   <TableCell>
                     <img
-                      src={article.imageUrl}
+                      src={
+                        article.imageUrl ? article.imageUrl : '/no-image.webp'
+                      }
                       alt="Article cover image"
                       width={64}
                       height={64}
@@ -130,7 +180,7 @@ export default function TableArticlesBase({
                           Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => handleDelete(article.id)}
+                          onClick={() => handleDeleteClick(article)}
                         >
                           Deletar
                         </DropdownMenuItem>
@@ -143,6 +193,49 @@ export default function TableArticlesBase({
           </Table>
         </CardContent>
       </Card>
+
+      <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        <DrawerContent>
+          <div className="mx-auto mt-4 w-full max-w-sm">
+            <DrawerHeader className="space-y-4">
+              <DrawerTitle>Confirmar Exclusão</DrawerTitle>
+              <DrawerDescription>
+                Tem certeza que deseja excluir o artigo{' '}
+                <span className="font-medium italic">
+                  &rdquo;
+                  {articleToDelete?.title}&rdquo;
+                </span>{' '}
+                ? Esta ação não pode ser desfeita.
+              </DrawerDescription>
+            </DrawerHeader>
+            <DrawerFooter>
+              <Button
+                variant="destructive"
+                onClick={handleDeleteConfirm}
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Deletando
+                  </>
+                ) : (
+                  'Confirmar'
+                )}
+              </Button>
+              <DrawerClose asChild>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsDrawerOpen(false)}
+                  disabled={isDeleting}
+                >
+                  Cancelar
+                </Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </div>
+        </DrawerContent>
+      </Drawer>
     </div>
   )
 }
