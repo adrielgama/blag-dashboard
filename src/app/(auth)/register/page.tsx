@@ -25,8 +25,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { registerFormSchema } from '@/schema/register.schema'
 
-const RecaptchaKey = process.env.RECAPTCHA_KEY
-
 export default function RegisterPage() {
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
@@ -136,7 +134,7 @@ export default function RegisterPage() {
             />
             <div className="flex flex-col items-center gap-2 text-center">
               <ReCAPTCHA
-                sitekey={RecaptchaKey!}
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_KEY as string}
                 onChange={(value) => setRecaptchaValue(value)}
               />
               <Button type="submit" size="sm" className="my-2 px-20 lg:my-6">
