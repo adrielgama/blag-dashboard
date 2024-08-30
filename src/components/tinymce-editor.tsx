@@ -11,7 +11,7 @@ export interface TextareaEditorProps {
   onChange?: (content: string) => void
 }
 
-const TinyMCEKey = process.env.NEXT_PUBLIC_TINY_API_KEY
+// const TinyMCEKey = process.env.NEXT_PUBLIC_TINY_API_KEY // TODO: use env variable
 
 export default function TextareaEditor({
   value,
@@ -78,7 +78,7 @@ export default function TextareaEditor({
         </div>
       )}
       <Editor
-        apiKey={TinyMCEKey}
+        apiKey="4suzg0l2301xnfoxihzty0ovre6ibi8idndp0fuvv68thiii"
         onInit={handleInit}
         value={value}
         onEditorChange={handleEditorChange}
